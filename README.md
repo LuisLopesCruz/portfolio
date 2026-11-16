@@ -3,7 +3,7 @@
 Site de página única em três idiomas (`/` português, `/en` inglês, `/es` espanhol).
 Next.js (App Router) + TypeScript + Tailwind CSS, 100% estático.
 
-No ar: https://portfolio-luis-claudio-lopes-da-cruzs-projects.vercel.app
+No ar: https://portfolio-luis-claudio-lopes-da-cruz-projects.vercel.app
 
 ## Publicar
 

@@ -4,11 +4,12 @@ import { HREFLANG, LOCALE_PATHS, PERSON } from "@/content/shared";
 import type { Locale } from "@/content/types";
 
 /**
- * Endereço oficial, no mesmo padrão do TEMPO-RJ (<projeto>-<conta>.vercel.app).
+ * Endereço oficial (domínio de produção, indexável). O padrão <projeto>-<conta>.vercel.app
+ * da Vercel também abre o site, mas vem marcado como "noindex".
  * Em produção os links canônicos e de idioma apontam para ele; nas prévias
  * usamos o endereço da própria prévia e, localmente, localhost.
  */
-export const PRODUCTION_URL = "https://portfolio-luis-claudio-lopes-da-cruzs-projects.vercel.app";
+export const PRODUCTION_URL = "https://portfolio-luis-claudio-lopes-da-cruz-projects.vercel.app";
 
 export const SITE_URL =
   process.env.VERCEL_ENV === "production"
