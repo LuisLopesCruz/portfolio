@@ -2,7 +2,7 @@ export type Locale = "pt" | "en" | "es";
 
 export type ProjectId = "legno" | "tempo" | "fsm360" | "ecovox" | "lumen";
 
-export type Status = "inUse" | "live" | "inDevelopment" | "inSpecification";
+export type Status = "inUse" | "live" | "closedBeta" | "inDevelopment" | "inSpecification";
 
 export interface ProjectMetric {
   value: string;

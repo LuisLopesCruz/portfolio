@@ -3,7 +3,7 @@ import FsmDiagram from "./FsmDiagram";
 import type { ProjectFacts } from "@/content/shared";
 import type { Content, ProjectText, Status } from "@/content/types";
 
-const ACTIVE_STATUS: Status[] = ["inUse", "live"];
+const ACTIVE_STATUS: Status[] = ["inUse", "live", "closedBeta"];
 
 function StatusBadge({ status, label }: { status: Status; label: string }) {
   const active = ACTIVE_STATUS.includes(status);

@@ -40,6 +40,7 @@ const en: Content = {
     statusLabels: {
       inUse: "In use",
       live: "Live",
+      closedBeta: "Closed beta",
       inDevelopment: "In development",
       inSpecification: "In specification",
     },

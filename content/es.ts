@@ -40,6 +40,7 @@ const es: Content = {
     statusLabels: {
       inUse: "En uso",
       live: "En línea",
+      closedBeta: "Beta cerrada",
       inDevelopment: "En desarrollo",
       inSpecification: "En especificación",
     },

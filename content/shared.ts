@@ -62,7 +62,7 @@ export const PROJECTS: ProjectFacts[] = [
   {
     id: "ecovox",
     name: "Eco Vox",
-    status: "inUse",
+    status: "closedBeta",
     images: [
       { src: "/projects/ecovox/inicio.jpg", width: 575, height: 1203 },
       { src: "/projects/ecovox/trilha.jpg", width: 575, height: 1203 },
@@ -74,7 +74,7 @@ export const PROJECTS: ProjectFacts[] = [
   {
     id: "lumen",
     name: "Lumen",
-    status: "inUse",
+    status: "closedBeta",
     images: [
       { src: "/projects/lumen/inicio.jpg", width: 575, height: 1200 },
       { src: "/projects/lumen/livros.jpg", width: 575, height: 1200 },
