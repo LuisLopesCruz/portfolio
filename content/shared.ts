@@ -62,7 +62,7 @@ export const PROJECTS: ProjectFacts[] = [
   {
     id: "ecovox",
     name: "Eco Vox",
-    status: "inDevelopment",
+    status: "inUse",
     images: [
       { src: "/projects/ecovox/inicio.jpg", width: 575, height: 1203 },
       { src: "/projects/ecovox/trilha.jpg", width: 575, height: 1203 },
