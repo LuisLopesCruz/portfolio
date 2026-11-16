@@ -3,6 +3,16 @@
 Site de página única em três idiomas (`/` português, `/en` inglês, `/es` espanhol).
 Next.js (App Router) + TypeScript + Tailwind CSS, 100% estático.
 
+No ar: https://portfolio-luis-claudio-lopes-da-cruzs-projects.vercel.app
+
+## Publicar
+
+A conta da Vercel ainda não está ligada ao GitHub, então um push não publica sozinho. Depois de enviar ao GitHub:
+
+```bash
+npx vercel deploy --prod --yes
+```
+
 ## Rodar localmente
 
 ```bash

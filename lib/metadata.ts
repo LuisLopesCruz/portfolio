@@ -3,10 +3,19 @@ import { CONTENT } from "@/content";
 import { HREFLANG, LOCALE_PATHS, PERSON } from "@/content/shared";
 import type { Locale } from "@/content/types";
 
-/** A Vercel informa o domínio de produção no build; localmente usamos localhost. */
-const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : "http://localhost:3000";
+/**
+ * Endereço oficial, no mesmo padrão do TEMPO-RJ (<projeto>-<conta>.vercel.app).
+ * Em produção os links canônicos e de idioma apontam para ele; nas prévias
+ * usamos o endereço da própria prévia e, localmente, localhost.
+ */
+export const PRODUCTION_URL = "https://portfolio-luis-claudio-lopes-da-cruzs-projects.vercel.app";
+
+const SITE_URL =
+  process.env.VERCEL_ENV === "production"
+    ? PRODUCTION_URL
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
 
 const OG_LOCALE: Record<Locale, string> = {
   pt: "pt_BR",
