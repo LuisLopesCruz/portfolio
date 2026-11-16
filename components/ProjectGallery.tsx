@@ -13,6 +13,8 @@ export interface GalleryImage {
 
 export interface GalleryLabels {
   enlarge: string;
+  /** Texto do selo, com {n} no lugar do número de telas. */
+  viewAll: string;
   close: string;
   previous: string;
   next: string;
@@ -20,14 +22,18 @@ export interface GalleryLabels {
 }
 
 /**
- * Imagem principal no cartão, miniaturas das demais e um modal (<dialog>)
- * para ver em tamanho grande e navegar com as setas.
+ * No cartão: prints de celular lado a lado, ou, para prints de tela larga, uma
+ * capa recortada numa moldura de janela com o selo "ver as N telas".
+ * O modal (<dialog>) mostra os prints inteiros e navega com as setas.
  */
 export default function ProjectGallery({
   images,
+  cover,
   labels,
 }: {
   images: GalleryImage[];
+  /** Recorte legível do primeiro print, usado como capa no cartão. */
+  cover?: { src: string; width: number; height: number };
   labels: GalleryLabels;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -59,7 +65,7 @@ export default function ProjectGallery({
     if (event.target === dialogRef.current) close();
   }
 
-  const [first, ...rest] = images;
+  const [first] = images;
   // Prints de celular (verticais) aparecem lado a lado, sem imagem principal.
   const phone = first.height > first.width;
   const currentPhone = current.height > current.width;
@@ -92,47 +98,32 @@ export default function ProjectGallery({
           ))}
         </ul>
       ) : (
-        <>
-          <button
-            type="button"
-            onClick={() => open(0)}
-            className="group block w-full cursor-zoom-in overflow-hidden rounded-xl border border-line"
-          >
-            <Image
-              src={first.src}
-              width={first.width}
-              height={first.height}
-              alt={first.alt}
-              sizes="(min-width: 1024px) 420px, (min-width: 768px) 40vw, 100vw"
-              className="h-auto w-full transition-opacity group-hover:opacity-90"
-            />
+        <button
+          type="button"
+          onClick={() => open(0)}
+          className="group relative block w-full cursor-zoom-in overflow-hidden rounded-xl border border-line bg-surface text-left"
+        >
+          <span aria-hidden="true" className="flex items-center gap-1.5 border-b border-line px-3 py-2">
+            <span className="size-2 rounded-full bg-line" />
+            <span className="size-2 rounded-full bg-line" />
+            <span className="size-2 rounded-full bg-line" />
+          </span>
+          <Image
+            src={(cover ?? first).src}
+            width={(cover ?? first).width}
+            height={(cover ?? first).height}
+            alt={first.alt}
+            sizes="(min-width: 1024px) 420px, (min-width: 768px) 40vw, 100vw"
+            className="aspect-[16/10] w-full object-cover object-top transition-opacity group-hover:opacity-90"
+          />
+          {many ? (
+            <span className="absolute right-3 bottom-3 rounded-full border border-line bg-bg/95 px-3 py-1 font-mono text-xs text-fg shadow-sm group-hover:border-accent group-hover:text-accent">
+              {labels.viewAll.replace("{n}", String(images.length))}
+            </span>
+          ) : (
             <span className="sr-only">{labels.enlarge}</span>
-          </button>
-
-          {rest.length > 0 && (
-            <ul className="mt-2 grid grid-cols-2 gap-2">
-              {rest.map((img, i) => (
-                <li key={img.src}>
-                  <button
-                    type="button"
-                    onClick={() => open(i + 1)}
-                    className="group block w-full cursor-zoom-in overflow-hidden rounded-lg border border-line"
-                  >
-                    <Image
-                      src={img.src}
-                      width={img.width}
-                      height={img.height}
-                      alt={img.alt}
-                      sizes="(min-width: 1024px) 210px, (min-width: 768px) 20vw, 50vw"
-                      className="aspect-[16/10] h-auto w-full object-cover object-left-top transition-opacity group-hover:opacity-90"
-                    />
-                    <span className="sr-only">{labels.enlarge}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
           )}
-        </>
+        </button>
       )}
 
       <dialog

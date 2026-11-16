@@ -42,6 +42,7 @@ const en: Content = {
     externalLinkHint: "opens in a new tab",
     imagePlaceholder: "Screenshot coming soon",
     enlargeImage: "Enlarge image",
+    galleryViewAll: "View all {n} screens",
     galleryClose: "Close",
     galleryPrevious: "Previous image",
     galleryNext: "Next image",

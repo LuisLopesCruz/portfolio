@@ -63,8 +63,10 @@ export default function ProjectCard({
               alt: text.images?.[i]?.alt ?? facts.name,
               caption: text.images?.[i]?.caption ?? facts.name,
             }))}
+            cover={facts.cover}
             labels={{
               enlarge: labels.enlargeImage,
+              viewAll: labels.galleryViewAll,
               close: labels.galleryClose,
               previous: labels.galleryPrevious,
               next: labels.galleryNext,

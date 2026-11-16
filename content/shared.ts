@@ -23,6 +23,8 @@ export interface ProjectFacts {
   link?: string;
   /** Prints em /public/projects/<projeto>/; o primeiro é o principal. Vazio enquanto não chegam. */
   images?: { src: string; width: number; height: number }[];
+  /** Recorte legível do primeiro print, mostrado no cartão (prints de tela larga). */
+  cover?: { src: string; width: number; height: number };
 }
 
 /** Ordem de exibição dos cartões (seção 6 da spec). */
@@ -31,6 +33,7 @@ export const PROJECTS: ProjectFacts[] = [
     id: "legno",
     name: "Legno Design ERP",
     status: "inUse",
+    cover: { src: "/projects/legno/capa.png", width: 818, height: 511 },
     images: [
       { src: "/projects/legno/cotacao.png", width: 1608, height: 987 },
       { src: "/projects/legno/dashboard.png", width: 1726, height: 996 },
@@ -44,6 +47,7 @@ export const PROJECTS: ProjectFacts[] = [
     status: "live",
     stack: ["TypeScript", "Supabase", "PostgreSQL", "Open-Meteo", "Vercel"],
     link: "https://tempo-rj-luis-claudio-lopes-da-cruzs-projects.vercel.app/",
+    cover: { src: "/projects/tempo/capa.png", width: 1041, height: 651 },
     images: [
       { src: "/projects/tempo/impacto.png", width: 1041, height: 902 },
       { src: "/projects/tempo/painel.png", width: 1080, height: 560 },

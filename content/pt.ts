@@ -42,6 +42,7 @@ const pt: Content = {
     externalLinkHint: "abre em nova aba",
     imagePlaceholder: "Imagem em breve",
     enlargeImage: "Ampliar imagem",
+    galleryViewAll: "Ver as {n} telas",
     galleryClose: "Fechar",
     galleryPrevious: "Imagem anterior",
     galleryNext: "Próxima imagem",

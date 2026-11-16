@@ -71,6 +71,7 @@ export interface Content {
     externalLinkHint: string;
     imagePlaceholder: string;
     enlargeImage: string;
+    galleryViewAll: string;
     galleryClose: string;
     galleryPrevious: string;
     galleryNext: string;

@@ -42,6 +42,7 @@ const es: Content = {
     externalLinkHint: "se abre en una pestaña nueva",
     imagePlaceholder: "Imagen próximamente",
     enlargeImage: "Ampliar imagen",
+    galleryViewAll: "Ver las {n} pantallas",
     galleryClose: "Cerrar",
     galleryPrevious: "Imagen anterior",
     galleryNext: "Imagen siguiente",
