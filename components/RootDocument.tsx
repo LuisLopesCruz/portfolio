@@ -1,23 +1,29 @@
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { DM_Mono, Manrope } from "next/font/google";
 import type { ReactNode } from "react";
 import "@/app/globals.css";
 import { CONTENT } from "@/content";
 import type { Locale } from "@/content/types";
 import { FIRST_VISIT_REDIRECT_SCRIPT } from "@/lib/locale-storage";
 
-const plexSans = IBM_Plex_Sans({
+const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-plex-sans",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
+const dmMono = DM_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
-  variable: "--font-plex-mono",
+  variable: "--font-dm-mono",
   display: "swap",
 });
+
+/**
+ * Marca a página para as animações de entrada só quando o JavaScript roda e o
+ * visitante não pediu movimento reduzido. Sem isso, todo o conteúdo fica visível.
+ */
+const MOTION_FLAG_SCRIPT = `try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("js-motion")}catch(e){}`;
 
 export default function RootDocument({
   locale,
@@ -27,11 +33,16 @@ export default function RootDocument({
   children: ReactNode;
 }) {
   return (
-    <html lang={CONTENT[locale].htmlLang} className={`${plexSans.variable} ${plexMono.variable}`}>
+    <html
+      lang={CONTENT[locale].htmlLang}
+      className={`${manrope.variable} ${dmMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {locale === "pt" && (
           <script dangerouslySetInnerHTML={{ __html: FIRST_VISIT_REDIRECT_SCRIPT }} />
         )}
+        <script dangerouslySetInnerHTML={{ __html: MOTION_FLAG_SCRIPT }} />
       </head>
       <body className="min-h-screen bg-bg font-sans text-fg antialiased">{children}</body>
     </html>

@@ -1,53 +1,52 @@
 @import "tailwindcss";
 
-/* Tokens de cor. Uma única cor de destaque: azul-petróleo. */
+/*
+ * Tema escuro único. Azul-petróleo como cor principal e ciano como apoio.
+ * Referência visual: sugestão de designer (pasta MANUS), adaptada.
+ */
 :root {
-  --bg: #ffffff;
-  --surface: #f4f6f6;
-  --text: #0f1416;
-  --muted: #4a5559;
-  --border: #dde3e4;
-  --accent: #0f6e7a;
-  --accent-strong: #0a5660;
-  --accent-soft: #e5f1f2;
-  --on-accent: #ffffff;
-  --header-h: 7.5rem;
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0c1112;
-    --surface: #141b1d;
-    --text: #e7ecec;
-    --muted: #a3afb2;
-    --border: #273134;
-    --accent: #5ec2cd;
-    --accent-strong: #86d4dc;
-    --accent-soft: #13292c;
-    --on-accent: #06191b;
-    color-scheme: dark;
-  }
+  --bg: #07090c;
+  --surface: #0d1116;
+  --surface-2: #121820;
+  --text: #eef2f3;
+  --muted: #a1abb1;
+  --faint: #7f8a91;
+  --border: #1f272e;
+  --border-strong: #2d3842;
+  --accent: #4fb0c6; /* petróleo claro, legível no escuro */
+  --accent-deep: #0f6e7a; /* petróleo da marca */
+  --accent-strong: #84cfdf;
+  --accent-soft: #0e252c;
+  --cyan: #7be8dc;
+  --on-accent: #04141a;
+  --header-h: 7.25rem;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  color-scheme: dark;
 }
 
 @media (min-width: 1024px) {
   :root {
-    --header-h: 4.5rem;
+    --header-h: 4.75rem;
   }
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-fg: var(--text);
   --color-muted: var(--muted);
+  --color-faint: var(--faint);
   --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
   --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
   --color-accent-strong: var(--accent-strong);
   --color-accent-soft: var(--accent-soft);
+  --color-cyan: var(--cyan);
   --color-on-accent: var(--on-accent);
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-dm-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
 html {
@@ -56,11 +55,27 @@ html {
 }
 
 body {
-  background: var(--bg);
+  position: relative;
+  background:
+    radial-gradient(circle at 82% 8%, #0f6e7a26, transparent 32%),
+    radial-gradient(circle at 10% 62%, #7be8dc0d, transparent 30%),
+    var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Grão sutil sobre a página inteira. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -74,14 +89,23 @@ section[id] {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+  outline: 2px solid var(--cyan);
+  outline-offset: 4px;
   border-radius: 4px;
 }
 
 ::selection {
-  background: var(--accent-soft);
-  color: var(--text);
+  background: #0f6e7a;
+  color: #ffffff;
+}
+
+/* Texto com gradiente petróleo → ciano, usado no destaque do título. */
+.gradient-text {
+  background: linear-gradient(100deg, #9fdcea 0%, var(--accent) 45%, var(--cyan) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Bloco neutro que ocupa o lugar do print enquanto ele não chega. */
@@ -92,4 +116,204 @@ section[id] {
     linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 28px 28px;
   background-position: -1px -1px;
+}
+
+/* ---------- Visual do sistema (hero) ---------- */
+
+/* Área do núcleo: sem moldura, as órbitas ficam soltas sobre o fundo da página. */
+.system-canvas {
+  position: absolute;
+  inset: -22%;
+  width: 144%;
+  height: 144%;
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+}
+
+.system-stage {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 8px), 0);
+  transition: transform 0.8s var(--ease);
+}
+
+/* Esfera do núcleo: lisa, com luz no alto à esquerda. */
+.system-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 200px;
+  margin: -100px 0 0 -100px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, #c9f3fb 0%, #6cc6d8 14%, #2a8ea3 36%, #0f5462 62%, #071f26 88%);
+  box-shadow:
+    inset -22px -26px 44px #02090c,
+    inset 12px 10px 26px #ffffff2e;
+  animation: coreFloat 6s ease-in-out infinite;
+}
+
+.system-core::after {
+  content: "";
+  position: absolute;
+  width: 42%;
+  height: 34%;
+  left: 16%;
+  top: 11%;
+  border-radius: 50%;
+  background: #ffffff50;
+  filter: blur(20px);
+}
+
+/* Brilho do núcleo como camada própria (sombra grande em 3D sai cortada). */
+.core-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 460px;
+  height: 460px;
+  margin: -230px 0 0 -230px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2a8ea352 0%, #2a8ea31c 34%, transparent 66%);
+  pointer-events: none;
+}
+
+.pulse-dot {
+  box-shadow: 0 0 0 0 #7be8dc66;
+  animation: pulse 2s infinite;
+}
+
+@media (max-width: 639px) {
+  .system-core {
+    width: 140px;
+    height: 140px;
+    margin: -70px 0 0 -70px;
+  }
+  .core-glow {
+    width: 320px;
+    height: 320px;
+    margin: -160px 0 0 -160px;
+  }
+}
+
+/* Animações do hero ficam paradas até a página carregar e o visual estar na tela. */
+.system-visual[data-paused="true"] * {
+  animation-play-state: paused !important;
+}
+
+/* ---------- Faixa corrida ---------- */
+
+.ticker-track {
+  animation: marquee 38s linear infinite;
+}
+
+/* ---------- Título do hero ---------- */
+
+.hero-rise {
+  animation: rise 0.9s var(--ease) both;
+}
+
+/* ---------- Revelação ao rolar ---------- */
+/* Só esconde quando o JavaScript está ativo e o visitante aceita movimento. */
+
+.js-motion [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.85s var(--ease),
+    transform 0.85s var(--ease);
+}
+
+.js-motion [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Linha que se desenha nos passos e na linha do tempo. */
+.draw-x {
+  transform-origin: left;
+}
+.draw-y {
+  transform-origin: top;
+}
+.js-motion [data-reveal] .draw-x {
+  transform: scaleX(0);
+  transition: transform 1.4s var(--ease) 0.2s;
+}
+.js-motion [data-reveal] .draw-y {
+  transform: scaleY(0);
+  transition: transform 1.6s var(--ease) 0.2s;
+}
+.js-motion [data-reveal].is-visible .draw-x,
+.js-motion [data-reveal].is-visible .draw-y {
+  transform: none;
+}
+
+/* Brilho que segue o cursor (só com mouse). */
+.pointer-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 380px;
+  height: 380px;
+  margin: -190px 0 0 -190px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, #4fb0c614, transparent 65%);
+  transform: translate3d(var(--gx, -999px), var(--gy, -999px), 0);
+  transition: transform 0.45s ease-out;
+}
+
+/* Inclinação leve dos prints ao passar o mouse. */
+@media (hover: hover) {
+  .tilt {
+    transition: transform 0.6s var(--ease);
+  }
+  .tilt:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-4deg) translateY(-4px);
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(28px);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes pulse {
+  70% {
+    box-shadow: 0 0 0 9px #7be8dc00;
+  }
+  100% {
+    box-shadow: 0 0 0 0 #7be8dc00;
+  }
+}
+@keyframes coreFloat {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -8px;
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

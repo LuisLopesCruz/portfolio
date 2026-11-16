@@ -53,9 +53,9 @@ export default function ProjectCard({
       id={`card-${facts.id}`}
       data-anchor
       aria-labelledby={headingId}
-      className="grid gap-6 rounded-2xl border border-line bg-bg p-5 sm:p-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-10"
+      className="grid gap-6 rounded-2xl border border-line bg-surface/70 p-5 transition-[border-color,box-shadow] duration-500 hover:border-accent/40 hover:shadow-[0_0_70px_-24px_#4fb0c666] sm:p-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-10"
     >
-      <div className="order-last md:order-first md:sticky md:top-24 md:self-start">
+      <div className="tilt order-last md:order-first md:sticky md:top-28 md:self-start">
         {facts.images?.length ? (
           <ProjectGallery
             images={facts.images.map((img, i) => ({
@@ -94,10 +94,10 @@ export default function ProjectCard({
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <span aria-hidden="true" className="font-mono text-sm text-muted">
+          <span aria-hidden="true" className="font-mono text-xs tracking-[0.14em] text-cyan">
             {number}
           </span>
-          <h3 id={headingId} className="text-2xl font-semibold tracking-tight text-fg">
+          <h3 id={headingId} className="text-3xl font-extrabold tracking-[-0.04em] text-fg">
             {facts.name}
           </h3>
           <StatusBadge status={facts.status} label={labels.statusLabels[facts.status]} />
@@ -109,7 +109,7 @@ export default function ProjectCard({
             {text.metrics.map((metric) => (
               <div
                 key={metric.label}
-                className="flex flex-row-reverse items-baseline justify-end gap-3 rounded-xl border border-line bg-surface px-4 py-2.5 sm:flex-col-reverse sm:items-start sm:gap-1 sm:py-3"
+                className="flex flex-row-reverse items-baseline justify-end gap-3 rounded-xl border border-line bg-surface-2 px-4 py-2.5 sm:flex-col-reverse sm:items-start sm:gap-1 sm:py-3"
               >
                 <dt className="text-xs leading-snug text-muted">{metric.label}</dt>
                 <dd
@@ -154,7 +154,7 @@ export default function ProjectCard({
             {facts.stack.map((tech) => (
               <li
                 key={tech}
-                className="rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-fg"
+                className="rounded-md border border-line bg-surface-2 px-2.5 py-1 font-mono text-xs text-fg"
               >
                 {tech}
               </li>

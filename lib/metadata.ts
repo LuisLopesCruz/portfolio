@@ -10,7 +10,7 @@ import type { Locale } from "@/content/types";
  */
 export const PRODUCTION_URL = "https://portfolio-luis-claudio-lopes-da-cruzs-projects.vercel.app";
 
-const SITE_URL =
+export const SITE_URL =
   process.env.VERCEL_ENV === "production"
     ? PRODUCTION_URL
     : process.env.VERCEL_URL
@@ -58,8 +58,6 @@ export function buildMetadata(locale: Locale): Metadata {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c1112" },
-  ],
+  themeColor: "#07090c",
+  colorScheme: "dark",
 };

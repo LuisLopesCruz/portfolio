@@ -36,6 +36,25 @@ export interface ProjectText {
   diagram?: ProjectDiagram;
 }
 
+export interface ArticleBlock {
+  type: "h2" | "p";
+  text: string;
+}
+
+export interface Article {
+  /** Mesmo id nos três idiomas, para ligar as traduções. */
+  id: string;
+  /** Endereço do artigo neste idioma. */
+  slug: string;
+  title: string;
+  summary: string;
+  /** Data de publicação, AAAA-MM-DD. */
+  date: string;
+  readingMinutes: number;
+  tags: string[];
+  body: ArticleBlock[];
+}
+
 export interface Content {
   locale: Locale;
   htmlLang: string;
@@ -49,6 +68,7 @@ export interface Content {
     projects: string;
     howIWork: string;
     background: string;
+    articles: string;
     contact: string;
     languageLabel: string;
     languageNames: Record<Locale, string>;
@@ -56,6 +76,11 @@ export interface Content {
   hero: {
     eyebrow: string;
     title: string;
+    /** Trecho do título destacado com gradiente (precisa existir no título). */
+    titleHighlight: string;
+    /** Texto dentro da esfera do hero. */
+    coreTitle: string;
+    coreSubtitle: string;
     subtitle: string;
     ctaProjects: string;
     ctaContact: string;
@@ -90,6 +115,14 @@ export interface Content {
     milestones: { period: string; title: string; text: string }[];
     educationTitle: string;
     education: string[];
+  };
+  articles: {
+    title: string;
+    intro: string;
+    readLabel: string;
+    minutesLabel: string;
+    backLabel: string;
+    items: Article[];
   };
   contact: {
     title: string;

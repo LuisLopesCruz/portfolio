@@ -104,5 +104,17 @@ export const SECTION_IDS = {
   projects: "projects",
   howIWork: "how-i-work",
   background: "background",
+  articles: "articles",
   contact: "contact",
 } as const;
+
+/** Pasta dos artigos em cada idioma. */
+export const ARTICLE_BASE: Record<Locale, string> = {
+  pt: "/artigos",
+  en: "/en/articles",
+  es: "/es/articulos",
+};
+
+export function articlePath(locale: Locale, slug: string) {
+  return `${ARTICLE_BASE[locale]}/${slug}`;
+}

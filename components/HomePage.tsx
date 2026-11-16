@@ -1,26 +1,46 @@
-import { CONTACT, PERSON, PROJECTS, SECTION_IDS } from "@/content/shared";
+import { CONTACT, PERSON, PROJECTS, SECTION_IDS, articlePath } from "@/content/shared";
 import type { Content } from "@/content/types";
+import { formatDate } from "@/lib/articles";
+import PageEffects from "./PageEffects";
 import ProjectCard from "./ProjectCard";
 import ScrollRestore from "./ScrollRestore";
 import SiteHeader from "./SiteHeader";
+import SystemVisual from "./SystemVisual";
 
 function SectionHeading({ number, id, children }: { number: string; id: string; children: string }) {
   return (
-    <div className="mb-10 flex items-baseline gap-4 sm:mb-14">
-      <span aria-hidden="true" className="font-mono text-sm text-accent">
-        {number}
+    <div data-reveal className="mb-12 sm:mb-16">
+      <span aria-hidden="true" className="font-mono text-xs tracking-[0.16em] text-cyan">
+        {number} /
       </span>
-      <h2 id={id} className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
+      <h2
+        id={id}
+        className="mt-3 text-[clamp(2.5rem,7vw,4.75rem)] leading-[0.92] font-extrabold tracking-[-0.06em] text-fg uppercase"
+      >
         {children}
       </h2>
     </div>
   );
 }
 
+/** Divide o título para aplicar o gradiente só no trecho destacado. */
+function HeroTitle({ title, highlight }: { title: string; highlight: string }) {
+  const i = title.indexOf(highlight);
+  if (!highlight || i < 0) return <>{title}</>;
+  return (
+    <>
+      {title.slice(0, i)}
+      <span className="gradient-text">{highlight}</span>
+      {title.slice(i + highlight.length)}
+    </>
+  );
+}
+
 export default function HomePage({ content }: { content: Content }) {
-  const { hero, projects, howIWork, background, contact, footer, nav } = content;
+  const { hero, projects, howIWork, background, articles, contact, footer, nav } = content;
   const textById = new Map(projects.items.map((item) => [item.id, item]));
   const year = new Date().getFullYear();
+  const tickerItems = [...PROJECTS, ...PROJECTS];
 
   const contactLinks = [
     { label: contact.linkedinLabel, href: CONTACT.linkedin, display: CONTACT.linkedinDisplay, external: true },
@@ -36,50 +56,67 @@ export default function HomePage({ content }: { content: Content }) {
       >
         {nav.skipToContent}
       </a>
+      <PageEffects />
       <SiteHeader content={content} />
       <ScrollRestore />
 
-      <main id="main" tabIndex={-1} className="outline-none">
+      <main id="main" tabIndex={-1} className="relative z-10 outline-none">
         {/* Hero */}
-        <section data-anchor id={SECTION_IDS.hero} aria-labelledby="hero-title" className="border-b border-line">
-          <div className="mx-auto max-w-6xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:pt-32">
-            <p className="font-mono text-sm font-medium tracking-wider text-accent uppercase">
-              {hero.eyebrow}
-            </p>
-            <h1
-              id="hero-title"
-              className="mt-5 max-w-4xl text-4xl leading-[1.08] font-semibold tracking-tight text-balance text-fg sm:text-5xl lg:text-6xl"
-            >
-              {hero.title}
-            </h1>
-            <p className="mt-7 max-w-3xl text-lg leading-relaxed text-pretty text-muted sm:text-xl">
-              {hero.subtitle}
-            </p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a
-                href={`#${SECTION_IDS.projects}`}
-                className="inline-flex items-center rounded-lg bg-accent px-5 py-3 font-medium text-on-accent transition-colors hover:bg-accent-strong"
+        <section data-anchor id={SECTION_IDS.hero} aria-labelledby="hero-title" className="overflow-x-clip">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pt-14 lg:pb-20">
+            <div>
+              <p className="flex items-center gap-3 font-mono text-[11px] tracking-[0.16em] text-muted uppercase">
+                <span aria-hidden="true" className="pulse-dot size-2 rounded-full bg-cyan" />
+                {hero.eyebrow}
+              </p>
+              <h1
+                id="hero-title"
+                className="hero-rise mt-7 text-[clamp(2.4rem,5.6vw,4.6rem)] leading-[1] font-extrabold tracking-[-0.045em] text-balance text-fg"
               >
-                {hero.ctaProjects}
-              </a>
-              <a
-                href={`#${SECTION_IDS.contact}`}
-                className="inline-flex items-center rounded-lg border border-line px-5 py-3 font-medium text-fg transition-colors hover:border-accent hover:text-accent"
-              >
-                {hero.ctaContact}
-              </a>
+                <HeroTitle title={hero.title} highlight={hero.titleHighlight} />
+              </h1>
+              <p className="mt-8 max-w-xl text-lg leading-relaxed text-pretty text-muted">
+                {hero.subtitle}
+              </p>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <a
+                  href={`#${SECTION_IDS.projects}`}
+                  className="group inline-flex min-w-48 items-center justify-between gap-6 bg-accent px-5 py-4 text-xs font-extrabold tracking-[0.08em] text-on-accent uppercase transition-transform duration-300 hover:-translate-y-1"
+                >
+                  {hero.ctaProjects}
+                  <span aria-hidden="true" className="text-lg font-normal">
+                    ↗
+                  </span>
+                </a>
+                <a
+                  href={`#${SECTION_IDS.contact}`}
+                  className="group inline-flex min-w-48 items-center justify-between gap-6 border border-line-strong bg-white/[0.02] px-5 py-4 text-xs font-extrabold tracking-[0.08em] text-fg uppercase transition-all duration-300 hover:-translate-y-1 hover:border-accent"
+                >
+                  {hero.ctaContact}
+                  <span aria-hidden="true" className="text-lg font-normal">
+                    ↓
+                  </span>
+                </a>
+              </div>
+            </div>
+            <SystemVisual coreTitle={hero.coreTitle} coreSubtitle={hero.coreSubtitle} />
+          </div>
+
+          {/* Faixa corrida com os projetos (decorativa). */}
+          <div aria-hidden="true" className="overflow-hidden border-y border-line py-5">
+            <div className="ticker-track flex w-max gap-10 whitespace-nowrap">
+              {tickerItems.map((p, i) => (
+                <span key={`${p.id}-${i}`} className="font-mono text-[11px] tracking-[0.2em] text-faint uppercase">
+                  {p.name} <span className="ml-8 text-accent">✳</span>
+                </span>
+              ))}
             </div>
           </div>
         </section>
 
         {/* Projetos */}
-        <section
-          data-anchor
-          id={SECTION_IDS.projects}
-          aria-labelledby="projects-title"
-          className="border-b border-line bg-surface"
-        >
-          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <section data-anchor id={SECTION_IDS.projects} aria-labelledby="projects-title">
+          <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
             <SectionHeading number="01" id="projects-title">
               {projects.title}
             </SectionHeading>
@@ -88,13 +125,9 @@ export default function HomePage({ content }: { content: Content }) {
                 const text = textById.get(facts.id);
                 if (!text) return null;
                 return (
-                  <ProjectCard
-                    key={facts.id}
-                    index={index}
-                    facts={facts}
-                    text={text}
-                    labels={projects}
-                  />
+                  <div key={facts.id} data-reveal>
+                    <ProjectCard index={index} facts={facts} text={text} labels={projects} />
+                  </div>
                 );
               })}
             </div>
@@ -106,75 +139,85 @@ export default function HomePage({ content }: { content: Content }) {
           data-anchor
           id={SECTION_IDS.howIWork}
           aria-labelledby="how-title"
-          className="border-b border-line"
+          className="border-y border-line bg-surface/60"
         >
-          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+          <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
             <SectionHeading number="02" id="how-title">
               {howIWork.title}
             </SectionHeading>
-            <ol className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-              {howIWork.steps.map((step, i) => (
-                <li key={step.title} className="border-t-2 border-accent pt-5">
-                  <span aria-hidden="true" className="font-mono text-sm text-muted">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="mt-3 text-xl font-semibold tracking-tight text-fg">{step.title}</h3>
-                  <p className="mt-2 leading-relaxed text-muted">{step.text}</p>
-                </li>
-              ))}
-            </ol>
+            <div data-reveal className="relative">
+              <span
+                aria-hidden="true"
+                className="draw-x absolute inset-x-0 top-0 h-px bg-gradient-to-r from-accent via-cyan to-transparent"
+              />
+              <ol className="grid gap-px border-b border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+                {howIWork.steps.map((step, i) => (
+                  <li
+                    key={step.title}
+                    className="bg-surface px-5 pt-7 pb-9 transition-colors duration-300 hover:bg-surface-2"
+                  >
+                    <span aria-hidden="true" className="font-mono text-xs tracking-[0.14em] text-cyan">
+                      {String(i + 1).padStart(2, "0")} / {String(howIWork.steps.length).padStart(2, "0")}
+                    </span>
+                    <h3 className="mt-10 text-xl font-bold tracking-[-0.02em] text-fg">{step.title}</h3>
+                    <p className="mt-3 leading-relaxed text-muted">{step.text}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         </section>
 
         {/* Trajetória */}
-        <section
-          data-anchor
-          id={SECTION_IDS.background}
-          aria-labelledby="background-title"
-          className="border-b border-line bg-surface"
-        >
-          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <section data-anchor id={SECTION_IDS.background} aria-labelledby="background-title">
+          <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
             <SectionHeading number="03" id="background-title">
               {background.title}
             </SectionHeading>
-            <dl className="mb-14 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            <dl data-reveal className="mb-16 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               {background.stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="flex flex-col-reverse justify-end gap-1.5 rounded-2xl border border-line bg-bg p-4 sm:p-6"
+                  className="flex flex-col-reverse justify-end gap-2 border border-line bg-surface/70 p-5 transition-colors duration-300 hover:border-accent/50 sm:p-6"
                 >
                   <dt className="text-sm leading-snug text-muted">{stat.label}</dt>
-                  <dd className="text-xl font-semibold tracking-tight whitespace-nowrap text-accent sm:text-3xl">
+                  <dd className="gradient-text text-2xl font-extrabold tracking-[-0.04em] whitespace-nowrap sm:text-4xl">
                     {stat.value}
                   </dd>
                 </div>
               ))}
             </dl>
-            <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-              <ol className="relative border-l border-line">
-                {background.milestones.map((m, i) => (
-                  <li key={m.period} className="relative pb-9 pl-7 last:pb-0">
-                    <span
-                      aria-hidden="true"
-                      className={
-                        i === background.milestones.length - 1
-                          ? "absolute top-1.5 -left-[7px] size-3.5 rounded-full border-2 border-accent bg-accent"
-                          : "absolute top-1.5 -left-[7px] size-3.5 rounded-full border-2 border-accent bg-surface"
-                      }
-                    />
-                    <p className="font-mono text-sm text-accent">{m.period}</p>
-                    <h3 className="mt-1 text-xl font-semibold tracking-tight text-fg">{m.title}</h3>
-                    <p className="mt-2 leading-relaxed text-muted">{m.text}</p>
-                  </li>
-                ))}
-              </ol>
-              <div className="self-start rounded-2xl border border-line bg-bg p-6 sm:p-8">
-                <h3 className="font-mono text-xs font-medium tracking-wider text-muted uppercase">
+            <div className="grid gap-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+              <div data-reveal className="relative">
+                <span
+                  aria-hidden="true"
+                  className="draw-y absolute top-2 bottom-2 left-0 w-px bg-gradient-to-b from-accent via-cyan/70 to-line"
+                />
+                <ol>
+                  {background.milestones.map((m, i) => (
+                    <li key={m.period} className="relative pb-10 pl-8 last:pb-0">
+                      <span
+                        aria-hidden="true"
+                        className={`absolute top-1.5 -left-[6px] size-3 rounded-full border-2 border-accent ${
+                          i === background.milestones.length - 1
+                            ? "bg-cyan shadow-[0_0_16px_#7be8dc]"
+                            : "bg-bg"
+                        }`}
+                      />
+                      <p className="font-mono text-xs tracking-[0.12em] text-cyan">{m.period}</p>
+                      <h3 className="mt-2 text-xl font-bold tracking-[-0.02em] text-fg">{m.title}</h3>
+                      <p className="mt-2 leading-relaxed text-muted">{m.text}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div data-reveal className="self-start border border-line bg-surface/70 p-6 sm:p-8">
+                <h3 className="font-mono text-xs font-medium tracking-[0.14em] text-accent uppercase">
                   {background.educationTitle}
                 </h3>
-                <ul className="mt-5 space-y-4">
+                <ul className="mt-6 space-y-5">
                   {background.education.map((item) => (
-                    <li key={item} className="leading-relaxed text-fg">
+                    <li key={item} className="border-t border-line pt-5 leading-relaxed text-fg first:border-t-0 first:pt-0">
                       {item}
                     </li>
                   ))}
@@ -184,33 +227,106 @@ export default function HomePage({ content }: { content: Content }) {
           </div>
         </section>
 
-        {/* Contato */}
-        <section data-anchor id={SECTION_IDS.contact} aria-labelledby="contact-title">
-          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-            <SectionHeading number="04" id="contact-title">
-              {contact.title}
+        {/* Artigos */}
+        <section
+          data-anchor
+          id={SECTION_IDS.articles}
+          aria-labelledby="articles-title"
+          className="border-t border-line bg-surface/60"
+        >
+          <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+            <SectionHeading number="04" id="articles-title">
+              {articles.title}
             </SectionHeading>
-            <p className="max-w-2xl text-xl leading-relaxed text-pretty text-fg sm:text-2xl">
-              {contact.text}
+            <p data-reveal className="-mt-4 mb-12 max-w-2xl text-lg leading-relaxed text-pretty text-muted sm:mb-16">
+              {articles.intro}
             </p>
-            <ul className="mt-10 divide-y divide-line border-y border-line">
+            <ul className="grid gap-5 md:grid-cols-2">
+              {articles.items.map((article, i) => (
+                <li key={article.id} data-reveal className={i === 0 ? "md:col-span-2" : ""}>
+                  <a
+                    href={articlePath(content.locale, article.slug)}
+                    className="group relative flex h-full flex-col overflow-hidden border border-line bg-bg/60 p-6 transition-[border-color,transform,box-shadow] duration-500 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_0_70px_-24px_#4fb0c666] sm:p-9"
+                  >
+                    <span className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[11px] tracking-[0.14em] uppercase">
+                      {article.tags.map((tag) => (
+                        <span key={tag} className="text-cyan">
+                          {tag}
+                        </span>
+                      ))}
+                      <span className="text-faint">
+                        {article.readingMinutes} {articles.minutesLabel}
+                      </span>
+                      <span className="text-faint">{formatDate(content.locale, article.date)}</span>
+                    </span>
+                    <span
+                      className={`mt-8 block font-extrabold tracking-[-0.04em] text-balance text-fg ${
+                        i === 0 ? "max-w-3xl text-3xl sm:text-4xl" : "text-2xl"
+                      }`}
+                    >
+                      {article.title}
+                    </span>
+                    <span className="mt-5 block max-w-2xl leading-relaxed text-muted">{article.summary}</span>
+                    <span className="mt-8 inline-flex items-center gap-3 font-mono text-xs tracking-[0.12em] text-fg uppercase transition-colors group-hover:text-cyan">
+                      {articles.readLabel}
+                      <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
+                        →
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* Contato */}
+        <section
+          data-anchor
+          id={SECTION_IDS.contact}
+          aria-labelledby="contact-title"
+          className="relative overflow-hidden border-t border-line"
+        >
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-40 -right-56 size-[640px] rounded-full bg-accent-deep/25 blur-[110px]"
+          />
+          <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-24 sm:px-6 sm:py-32 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+            <div data-reveal>
+              <span aria-hidden="true" className="font-mono text-xs tracking-[0.16em] text-cyan">
+                05 /
+              </span>
+              <h2
+                id="contact-title"
+                className="gradient-text mt-3 text-[clamp(3rem,10vw,6.5rem)] leading-[0.9] font-extrabold tracking-[-0.07em] uppercase"
+              >
+                {contact.title}
+              </h2>
+              <p className="mt-8 max-w-xl text-xl leading-relaxed text-pretty text-fg sm:text-2xl">
+                {contact.text}
+              </p>
+            </div>
+            <ul data-reveal className="border-t border-line">
               {contactLinks.map((link) => (
-                <li key={link.label}>
+                <li key={link.label} className="border-b border-line">
                   <a
                     href={link.href}
                     {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="group flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:gap-8"
+                    className="group flex items-center justify-between gap-4 py-5 transition-colors hover:text-cyan"
                   >
-                    <span className="w-24 shrink-0 font-mono text-xs font-medium tracking-wider text-muted uppercase">
-                      {link.label}
+                    <span className="min-w-0">
+                      <span className="block font-mono text-[11px] tracking-[0.14em] text-faint uppercase">
+                        {link.label}
+                      </span>
+                      <span className="mt-1 block text-base break-words text-fg transition-colors group-hover:text-cyan sm:text-lg">
+                        {link.display}
+                      </span>
                     </span>
-                    <span className="min-w-0 text-lg break-words text-fg transition-colors group-hover:text-accent sm:text-xl">
-                      {link.display}
-                      {link.external && (
-                        <span aria-hidden="true" className="ml-2 text-muted group-hover:text-accent">
-                          ↗
-                        </span>
-                      )}
+                    <span
+                      aria-hidden="true"
+                      className="text-lg text-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-cyan"
+                    >
+                      ↗
                     </span>
                   </a>
                 </li>
@@ -220,8 +336,8 @@ export default function HomePage({ content }: { content: Content }) {
         </section>
       </main>
 
-      <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 text-sm text-muted sm:flex-row sm:justify-between sm:px-6">
+      <footer className="relative z-10 border-t border-line">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-7 font-mono text-[11px] tracking-[0.1em] text-faint uppercase sm:flex-row sm:justify-between sm:px-6">
           <p>
             © {year} {PERSON.name}
           </p>

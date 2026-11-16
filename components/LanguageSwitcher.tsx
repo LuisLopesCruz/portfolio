@@ -29,10 +29,13 @@ export default function LanguageSwitcher({
   current,
   label,
   names,
+  paths = LOCALE_PATHS,
 }: {
   current: Locale;
   label: string;
   names: Record<Locale, string>;
+  /** Endereço de cada idioma; nos artigos, aponta para a tradução do artigo. */
+  paths?: Record<Locale, string>;
 }) {
   function onSelect(event: MouseEvent<HTMLAnchorElement>, target: Locale) {
     // Ctrl/Cmd+clique abre em nova aba normalmente.
@@ -52,23 +55,18 @@ export default function LanguageSwitcher({
     } catch {
       /* idem */
     }
-    window.location.assign(LOCALE_PATHS[target]);
+    window.location.assign(paths[target]);
   }
 
   return (
     <nav aria-label={label}>
-      <ul className="flex items-center font-mono text-sm">
-        {LOCALES.map((locale, i) => {
+      <ul className="flex items-center gap-0.5 rounded-full border border-line-strong p-1 font-mono text-[11px] tracking-[0.08em]">
+        {LOCALES.map((locale) => {
           const active = locale === current;
           return (
             <li key={locale} className="flex items-center">
-              {i > 0 && (
-                <span aria-hidden="true" className="px-1 text-line">
-                  |
-                </span>
-              )}
               <a
-                href={LOCALE_PATHS[locale]}
+                href={paths[locale]}
                 hrefLang={HREFLANG[locale]}
                 lang={HREFLANG[locale]}
                 aria-label={`${locale.toUpperCase()} — ${names[locale]}`}
@@ -76,8 +74,8 @@ export default function LanguageSwitcher({
                 onClick={(e) => onSelect(e, locale)}
                 className={
                   active
-                    ? "rounded-md bg-accent-soft px-2 py-1.5 font-medium text-accent"
-                    : "rounded-md px-2 py-1.5 text-muted transition-colors hover:text-fg"
+                    ? "inline-block rounded-full bg-accent px-2.5 py-1.5 font-medium text-on-accent"
+                    : "inline-block rounded-full px-2.5 py-1.5 text-muted transition-colors hover:text-fg"
                 }
               >
                 {locale.toUpperCase()}
