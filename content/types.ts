@@ -1,0 +1,103 @@
+export type Locale = "pt" | "en" | "es";
+
+export type ProjectId = "legno" | "tempo" | "fsm360" | "ecovox" | "lumen";
+
+export type Status = "inUse" | "live" | "inDevelopment" | "inSpecification";
+
+export interface ProjectMetric {
+  value: string;
+  label: string;
+}
+
+export interface ProjectDiagram {
+  hub: string;
+  hubCaption: string;
+  /** Seis domínios: três em cima e três embaixo do centro. */
+  nodes: string[];
+  /** Descrição do diagrama para leitores de tela. */
+  description: string;
+}
+
+export interface ProjectText {
+  id: ProjectId;
+  problem: string;
+  /** Três números que dão a escala do projeto. */
+  metrics: ProjectMetric[];
+  /** Substitui o rótulo "O que faz" (ex.: "O que vai fazer" para projetos em especificação). */
+  featuresLabel?: string;
+  features: string[];
+  /** Uma decisão ou achado que mostra como o projeto foi pensado. */
+  highlight: string;
+  /** Texto do link, quando o projeto tem link público. */
+  linkLabel?: string;
+  /** Texto alternativo e legenda de cada print, na mesma ordem de `images` em shared.ts. */
+  images?: { alt: string; caption: string }[];
+  /** Diagrama mostrado no lugar do print, quando o projeto ainda não tem tela. */
+  diagram?: ProjectDiagram;
+}
+
+export interface Content {
+  locale: Locale;
+  htmlLang: string;
+  meta: {
+    title: string;
+    description: string;
+  };
+  nav: {
+    skipToContent: string;
+    sectionsLabel: string;
+    projects: string;
+    howIWork: string;
+    background: string;
+    contact: string;
+    languageLabel: string;
+    languageNames: Record<Locale, string>;
+  };
+  hero: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    ctaProjects: string;
+    ctaContact: string;
+  };
+  projects: {
+    title: string;
+    problemLabel: string;
+    featuresLabel: string;
+    stackLabel: string;
+    metricsLabel: string;
+    highlightLabel: string;
+    statusLabels: Record<Status, string>;
+    externalLinkHint: string;
+    imagePlaceholder: string;
+    enlargeImage: string;
+    galleryClose: string;
+    galleryPrevious: string;
+    galleryNext: string;
+    galleryOf: string;
+    items: ProjectText[];
+  };
+  howIWork: {
+    title: string;
+    steps: { title: string; text: string }[];
+  };
+  background: {
+    title: string;
+    /** Quatro números lidos em segundos. */
+    stats: { value: string; label: string }[];
+    /** Marcos da carreira, do mais antigo ao atual. */
+    milestones: { period: string; title: string; text: string }[];
+    educationTitle: string;
+    education: string[];
+  };
+  contact: {
+    title: string;
+    text: string;
+    linkedinLabel: string;
+    githubLabel: string;
+    emailLabel: string;
+  };
+  footer: {
+    builtWith: string;
+  };
+}

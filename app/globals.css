@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+/* Tokens de cor. Uma única cor de destaque: azul-petróleo. */
+:root {
+  --bg: #ffffff;
+  --surface: #f4f6f6;
+  --text: #0f1416;
+  --muted: #4a5559;
+  --border: #dde3e4;
+  --accent: #0f6e7a;
+  --accent-strong: #0a5660;
+  --accent-soft: #e5f1f2;
+  --on-accent: #ffffff;
+  --header-h: 7.5rem;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c1112;
+    --surface: #141b1d;
+    --text: #e7ecec;
+    --muted: #a3afb2;
+    --border: #273134;
+    --accent: #5ec2cd;
+    --accent-strong: #86d4dc;
+    --accent-soft: #13292c;
+    --on-accent: #06191b;
+    color-scheme: dark;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 4.5rem;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+section[id] {
+  scroll-margin-top: var(--header-h);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+/* Bloco neutro que ocupa o lugar do print enquanto ele não chega. */
+.placeholder-grid {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: -1px -1px;
+}
