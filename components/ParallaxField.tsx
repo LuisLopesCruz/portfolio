@@ -18,11 +18,10 @@ type Mesh = { v: [number, number, number][]; e: [number, number][] };
 
 type Shape = {
   mesh: Mesh;
-  u: number; // fase inicial do ciclo (0–1)
-  loop: number; // a cada quantas telas a forma volta a passar
-  x: number; // posição horizontal (fração da largura)
-  depth: number; // 0 = fundo, 1 = frente
-  size: number; // raio em px antes da profundidade
+  lane: number; // coluna da tela em que a forma vive
+  slot: number; // posição dentro da coluna (0 .. PER_LANE-1)
+  jitter: number; // deslocamento lateral dentro da coluna (−1 a 1)
+  scale: number; // tamanho relativo ao máximo da coluna (0–1)
   ax: number;
   ay: number;
   vx: number; // giro por quadro
@@ -170,18 +169,22 @@ export default function ParallaxField() {
     const small = matchMedia("(max-width: 767px)").matches;
     const rand = seeded(11);
     const meshes = [TETRA, OCTA, CUBE, ICOSA, SPHERE, TORUS, OCTA, TETRA, ICOSA, CUBE];
-    const COUNT = small ? 7 : 12;
-
-    const shapes: Shape[] = Array.from({ length: COUNT }, (_, i) => {
-      const depth = rand();
+    // A tela vira colunas; cada coluna tem uma profundidade (e uma velocidade)
+    // própria e um número fixo de formas igualmente espaçadas. Como as formas
+    // de uma coluna andam juntas e não saem dela, nunca ficam umas sobre as outras.
+    const MAX_LANES = 6;
+    const PER_LANE = 3;
+    const LANE_DEPTH = [0.2, 0.85, 0.45, 1, 0.3, 0.65];
+    const laneOffset = Array.from({ length: MAX_LANES }, () => rand());
+    const shapes: Shape[] = Array.from({ length: MAX_LANES * PER_LANE }, (_, i) => {
+      const lane = i % MAX_LANES;
+      const slot = Math.floor(i / MAX_LANES);
       return {
-        mesh: meshes[i % meshes.length],
-        u: (i + rand() * 0.8) / COUNT,
-        loop: 2 + rand() * 1.5,
-        // Alterna os lados; algumas chegam perto do meio.
-        x: i % 2 === 0 ? 0.04 + rand() * 0.42 : 0.96 - rand() * 0.42,
-        depth,
-        size: (small ? 55 : 85) + rand() * (small ? 50 : 95),
+        mesh: meshes[(lane * 3 + slot * 5) % meshes.length],
+        lane,
+        slot,
+        jitter: rand() * 2 - 1,
+        scale: 0.62 + rand() * 0.38,
         ax: rand() * Math.PI * 2,
         ay: rand() * Math.PI * 2,
         vx: (0.0012 + rand() * 0.0025) * (rand() > 0.5 ? 1 : -1),
@@ -192,6 +195,7 @@ export default function ParallaxField() {
 
     let width = 0;
     let height = 0;
+    let lanes = 2;
     let heroEnd = 0;
     let running = false;
     let started = false;
@@ -205,6 +209,8 @@ export default function ParallaxField() {
       canvas!.width = Math.round(width * dpr);
       canvas!.height = Math.round(height * dpr);
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Uma coluna a cada ~260 px: 2 no celular, 5 ou 6 no computador.
+      lanes = Math.max(2, Math.min(MAX_LANES, Math.round(width / 260)));
       const hero = document.getElementById("top");
       heroEnd = hero ? hero.offsetTop + hero.offsetHeight : height;
     }
@@ -225,21 +231,26 @@ export default function ParallaxField() {
       // Só a parte da página abaixo do hero conta para o parallax.
       const local = Math.max(0, scroll - (heroEnd - height));
 
+      const laneW = width / lanes;
+      const rMax = laneW * 0.42; // diâmetro máximo = 84% da coluna: sobra vão entre colunas
       for (const s of shapes) {
         s.ax += s.vx;
         s.ay += s.vy;
-        const speed = 0.25 + s.depth * 0.75; // as de trás andam mais devagar
-        const r = s.size * (0.55 + s.depth * 0.75);
-        // Cada forma passa pela tela em ciclo, então a densidade não depende
-        // do tamanho da página.
-        const period = (height + 2 * r) * s.loop;
-        const phase = (((s.u * period - local * speed) % period) + period) % period;
-        const cy = phase - r;
-        if (cy > height + r * 1.6) continue;
-        const cx = s.x * width;
+        if (s.lane >= lanes) continue;
+        const depth = LANE_DEPTH[s.lane];
+        const speed = 0.25 + depth * 0.75; // as de trás andam mais devagar
+        const r = rMax * s.scale * (0.78 + depth * 0.22);
+        // As formas da coluna passam em ciclo, com vão fixo entre elas.
+        const period = Math.max(height + 2 * rMax, PER_LANE * (2.6 * rMax));
+        const base = (laneOffset[s.lane] + s.slot / PER_LANE) * period;
+        const phase = (((base - local * speed) % period) + period) % period;
+        const cy = phase - rMax;
+        if (cy > height + rMax || cy < -rMax) continue;
+        const cx = laneW * (s.lane + 0.5) + s.jitter * (laneW / 2 - r) * 0.6;
+        const xf = cx / width;
         // Fundo: bem fracas, e ainda mais perto do meio, onde fica o texto.
-        const nearText = 0.55 + 0.45 * Math.min(1, Math.abs(s.x - 0.5) / 0.35);
-        const alpha = fade * (0.12 + s.depth * 0.22) * nearText * (small ? 0.8 : 1);
+        const nearText = 0.55 + 0.45 * Math.min(1, Math.abs(xf - 0.5) / 0.35);
+        const alpha = fade * (0.11 + depth * 0.2) * nearText * (small ? 0.8 : 1);
 
         const cxr = Math.cos(s.ax);
         const sxr = Math.sin(s.ax);
@@ -251,12 +262,12 @@ export default function ParallaxField() {
           const z1 = -x * syr + z * cyr;
           const y2 = y * cxr - z1 * sxr;
           const z2 = y * sxr + z1 * cxr;
-          const k = 3 / (3 + z2);
+          const k = 2 / (3 + z2); // perspectiva leve, sem passar do raio
           return [cx + x1 * r * k, cy + y2 * r * k, z2] as const;
         });
 
         const color = s.cyan ? "123,232,220" : "79,176,198";
-        ctx!.lineWidth = s.depth > 0.6 ? 1.2 : 0.9;
+        ctx!.lineWidth = depth > 0.6 ? 1.2 : 0.9;
         // Arestas de trás mais fracas que as da frente.
         for (const back of [true, false]) {
           ctx!.beginPath();
