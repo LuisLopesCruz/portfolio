@@ -177,6 +177,7 @@ section[id] {
   border-radius: 50%;
   background: radial-gradient(circle, #2a8ea352 0%, #2a8ea31c 34%, transparent 66%);
   pointer-events: none;
+  animation: glowBreath 5s ease-in-out infinite;
 }
 
 .pulse-dot {
@@ -299,6 +300,17 @@ section[id] {
   }
   50% {
     translate: 0 -8px;
+  }
+}
+@keyframes glowBreath {
+  0%,
+  100% {
+    opacity: 0.75;
+    scale: 0.94;
+  }
+  50% {
+    opacity: 1;
+    scale: 1.08;
   }
 }
 @keyframes marquee {

@@ -34,21 +34,25 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
   const boxRef = useRef<HTMLDivElement>(null);
   const backRef = useRef<HTMLCanvasElement>(null);
   const frontRef = useRef<HTMLCanvasElement>(null);
+  const gridRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const box = boxRef.current;
     const back = backRef.current;
     const front = frontRef.current;
-    if (!box || !back || !front) return;
+    const grid = gridRef.current;
+    if (!box || !back || !front || !grid) return;
     const bctx = back.getContext("2d");
     const fctx = front.getContext("2d");
-    if (!bctx || !fctx) return;
+    const gctx = grid.getContext("2d");
+    if (!bctx || !fctx || !gctx) return;
 
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const small = matchMedia("(max-width: 639px)").matches;
     const rand = seeded(7);
 
     const ORBITS = small ? 14 : 22;
+    const TRAIL = small ? 2 : 4;
     const SEGMENTS = small ? 60 : 84;
     const orbits: Orbit[] = Array.from({ length: ORBITS }, (_, i) => ({
       radius: 0.55 + rand() * 0.6,
@@ -92,6 +96,9 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
     let rMax = 0;
     let sphereR = 0;
     let spin = 0;
+    let globe = 0; // giro próprio da malha na superfície da esfera
+    let pulseClock = 0; // ms, para as ondas que saem da esfera
+    let gridSize = 0;
     const pointer = { x: 0, y: 0 };
     const tilt = { x: 0, y: 0 };
     let running = false;
@@ -116,6 +123,10 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
       rMax = Math.min(boxRect.width, boxRect.height) * 0.5;
       const core = box!.querySelector<HTMLElement>(".system-core");
       sphereR = core ? core.offsetWidth / 2 : 0;
+      gridSize = sphereR * 2;
+      grid!.width = Math.round(gridSize * dpr);
+      grid!.height = Math.round(gridSize * dpr);
+      gctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     // Rotação 3D de um ponto (x, y, z) pelos ângulos da órbita e pelo giro global.
@@ -142,6 +153,98 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
       return { x: width / 2 + x * k, y: height / 2 + y * k, z };
     }
 
+    // Malha de meridianos e paralelos na superfície da esfera, girando.
+    // Só a metade da frente, mais fraca perto da borda (dá volume).
+    const AXIS_X = 0.34; // inclinação do eixo para o observador
+    const AXIS_Z = -0.38; // inclinação do eixo para o lado
+    function globePoint(lat: number, lon: number) {
+      let x = Math.cos(lat) * Math.sin(lon + globe);
+      let y = Math.sin(lat);
+      let z = Math.cos(lat) * Math.cos(lon + globe);
+      let c = Math.cos(AXIS_X), s = Math.sin(AXIS_X);
+      [y, z] = [y * c - z * s, y * s + z * c];
+      c = Math.cos(AXIS_Z); s = Math.sin(AXIS_Z);
+      [x, y] = [x * c - y * s, x * s + y * c];
+      const r = gridSize / 2 - 1;
+      return { x: gridSize / 2 + x * r, y: gridSize / 2 - y * r, z };
+    }
+    function drawGlobe() {
+      gctx!.clearRect(0, 0, gridSize, gridSize);
+      if (!gridSize) return;
+      const lines: { lat: number; lon: number }[][] = [];
+      for (let j = 0; j < 12; j++) {
+        const lon = (j / 12) * Math.PI * 2;
+        lines.push(Array.from({ length: 25 }, (_, i) => ({ lat: -Math.PI / 2 + (i / 24) * Math.PI, lon })));
+      }
+      for (const lat of [-1, -0.5, 0, 0.5, 1]) {
+        lines.push(Array.from({ length: 41 }, (_, i) => ({ lat, lon: (i / 40) * Math.PI * 2 })));
+      }
+      // Três faixas de profundidade, cada uma num traço só.
+      const bands = [
+        { min: 0, max: 0.35, alpha: 0.1 },
+        { min: 0.35, max: 0.7, alpha: 0.2 },
+        { min: 0.7, max: 1.01, alpha: 0.32 },
+      ];
+      const pts = lines.map((line) => line.map((q) => globePoint(q.lat, q.lon)));
+      gctx!.lineWidth = 0.8;
+      for (const band of bands) {
+        gctx!.beginPath();
+        for (const line of pts) {
+          for (let i = 0; i < line.length - 1; i++) {
+            const z = (line[i].z + line[i + 1].z) / 2;
+            if (z < band.min || z >= band.max) continue;
+            gctx!.moveTo(line[i].x, line[i].y);
+            gctx!.lineTo(line[i + 1].x, line[i + 1].y);
+          }
+        }
+        gctx!.strokeStyle = `rgba(214,248,253,${band.alpha})`;
+        gctx!.stroke();
+      }
+    }
+
+    // Desenha uma órbita em três camadas: atrás, na frente fora da esfera e na
+    // frente por cima dela (mais fraca, para não apagar o texto do núcleo).
+    function strokeOrbit(o: Orbit, color: string, alphaScale: number) {
+      const pts = [];
+      for (let i = 0; i <= SEGMENTS; i++) pts.push(project(o, (i / SEGMENTS) * Math.PI * 2));
+      const layers = [
+        { ctx: bctx!, test: (z: number) => z < 0, width: 0.8, alpha: 0.26 },
+        { ctx: fctx!, test: (z: number, over: boolean) => z >= 0 && !over, width: 1, alpha: 0.6 },
+        { ctx: fctx!, test: (z: number, over: boolean) => z >= 0 && over, width: 0.8, alpha: 0.16 },
+      ];
+      const cx = width / 2;
+      const cy = height / 2;
+      for (const layer of layers) {
+        const ctx = layer.ctx;
+        ctx.beginPath();
+        let drawing = false;
+        for (let i = 0; i < SEGMENTS; i++) {
+          const a = pts[i];
+          const b = pts[i + 1];
+          const mx = (a.x + b.x) / 2 - cx;
+          const my = (a.y + b.y) / 2 - cy;
+          const over = mx * mx + my * my < sphereR * sphereR;
+          if (layer.test((a.z + b.z) / 2, over)) {
+            if (!drawing) ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            drawing = true;
+          } else {
+            drawing = false;
+          }
+        }
+        ctx.lineWidth = layer.width;
+        ctx.strokeStyle = `rgba(${color},${layer.alpha * alphaScale})`;
+        ctx.stroke();
+      }
+    }
+
+    // Ondas: anéis que nascem na esfera e se abrem até sumir, como um sinal.
+    const PULSE_MS = 3600;
+    const pulses: Orbit[] = [
+      { radius: 0, rx: 1.22, ry: 0.1, rz: 0.28, alpha: 1, cyan: true, particles: [] },
+      { radius: 0, rx: -0.5, ry: 1.0, rz: -0.2, alpha: 1, cyan: true, particles: [] },
+    ];
+
     function draw() {
       bctx!.clearRect(0, 0, width, height);
       fctx!.clearRect(0, 0, width, height);
@@ -165,55 +268,43 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
       bctx!.setLineDash([]);
       bctx!.globalAlpha = 1;
 
+      // Ondas saindo da esfera.
+      if (rMax) {
+        pulses.forEach((pulse, i) => {
+          const t = ((pulseClock + i * (PULSE_MS / 2)) % PULSE_MS) / PULSE_MS;
+          pulse.radius = sphereR / rMax + t * 0.95;
+          const fade = Math.pow(1 - t, 1.6) * Math.min(1, t * 8);
+          strokeOrbit(pulse, "123,232,220", fade * 1.4);
+        });
+      }
+
       // Órbitas, separadas entre trás (z < 0) e frente.
       for (const o of orbits) {
         const color = o.cyan ? "123,232,220" : "132,207,223";
-        const pts = [];
-        for (let i = 0; i <= SEGMENTS; i++) pts.push(project(o, (i / SEGMENTS) * Math.PI * 2));
-        // Três camadas: atrás, na frente fora da esfera e na frente por cima dela (mais fraca,
-        // para não apagar o texto do núcleo).
-        const layers = [
-          { ctx: bctx!, test: (z: number) => z < 0, width: 0.8, alpha: 0.26 },
-          { ctx: fctx!, test: (z: number, over: boolean) => z >= 0 && !over, width: 1, alpha: 0.6 },
-          { ctx: fctx!, test: (z: number, over: boolean) => z >= 0 && over, width: 0.8, alpha: 0.16 },
-        ];
-        const cx = width / 2;
-        const cy = height / 2;
-        for (const layer of layers) {
-          const ctx = layer.ctx;
-          ctx.beginPath();
-          let drawing = false;
-          for (let i = 0; i < SEGMENTS; i++) {
-            const a = pts[i];
-            const b = pts[i + 1];
-            const mx = (a.x + b.x) / 2 - cx;
-            const my = (a.y + b.y) / 2 - cy;
-            const over = mx * mx + my * my < sphereR * sphereR;
-            if (layer.test((a.z + b.z) / 2, over)) {
-              if (!drawing) ctx.moveTo(a.x, a.y);
-              ctx.lineTo(b.x, b.y);
-              drawing = true;
-            } else {
-              drawing = false;
-            }
-          }
-          ctx.lineWidth = layer.width;
-          ctx.strokeStyle = `rgba(${color},${layer.alpha * o.alpha})`;
-          ctx.stroke();
-        }
+        strokeOrbit(o, color, o.alpha);
         // Partículas na órbita.
+        // Cada partícula deixa um rastro curto atrás de si.
         for (const p of o.particles) {
-          const q = project(o, p.t);
-          const ctx = q.z >= 0 ? fctx! : bctx!;
-          const dx = q.x - width / 2;
-          const dy = q.y - height / 2;
-          const overSphere = q.z >= 0 && dx * dx + dy * dy < sphereR * sphereR;
-          const size = p.size * (q.z >= 0 ? 6.5 : 4.5);
-          ctx.globalAlpha = q.z >= 0 ? (overSphere ? 0.35 : 0.95) : 0.4;
-          ctx.drawImage(o.cyan ? glowCyan : glowPetrol, q.x - size / 2, q.y - size / 2, size, size);
-          ctx.globalAlpha = 1;
+          for (let k = TRAIL; k >= 0; k--) {
+            const q = project(o, p.t - p.speed * k * 2.2);
+            const ctx = q.z >= 0 ? fctx! : bctx!;
+            const dx = q.x - width / 2;
+            const dy = q.y - height / 2;
+            const overSphere = q.z >= 0 && dx * dx + dy * dy < sphereR * sphereR;
+            const fall = 1 - k / (TRAIL + 1);
+            const size = p.size * (q.z >= 0 ? 6.5 : 4.5) * (0.45 + 0.55 * fall);
+            ctx.globalAlpha = (q.z >= 0 ? (overSphere ? 0.35 : 0.95) : 0.4) * fall * fall;
+            ctx.drawImage(o.cyan ? glowCyan : glowPetrol, q.x - size / 2, q.y - size / 2, size, size);
+          }
+          bctx!.globalAlpha = 1;
+          fctx!.globalAlpha = 1;
         }
       }
+    }
+
+    function drawAll() {
+      draw();
+      drawGlobe();
     }
 
     function tick(now: number) {
@@ -223,11 +314,13 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
       if (now - last < 32) return;
       const dt = Math.min((now - last) / 16.7, 4);
       last = now;
-      spin += 0.0016 * dt;
+      spin += 0.0026 * dt;
+      globe += 0.006 * dt;
+      pulseClock += dt * 16.7;
       tilt.x += (pointer.x * 0.5 - tilt.x) * 0.06 * dt;
       tilt.y += (pointer.y * 0.4 - tilt.y) * 0.06 * dt;
       for (const o of orbits) for (const p of o.particles) p.t += p.speed * dt;
-      draw();
+      drawAll();
     }
 
     function start() {
@@ -245,7 +338,7 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
     }
 
     resize();
-    draw();
+    drawAll();
 
     // Só anima depois que a página carregou e o navegador ficou ocioso.
     let ready = false;
@@ -271,7 +364,7 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
     const onVisibility = () => (document.hidden || !ready || !inView ? stop() : start());
     const onResize = () => {
       resize();
-      draw();
+      drawAll();
     };
     const onPointer = (event: PointerEvent) => {
       const rect = box.getBoundingClientRect();
@@ -316,6 +409,7 @@ export default function SystemVisual({ coreTitle, coreSubtitle }: { coreTitle: s
       <span className="core-glow" />
       <div className="system-stage">
         <span className="system-core">
+          <canvas ref={gridRef} className="absolute inset-0 size-full rounded-full" />
           <span className="relative z-10 flex h-full flex-col items-center justify-center text-white">
             <span className="text-[3.25rem] leading-none font-extrabold tracking-[-0.08em] sm:text-[4.25rem]">
               {coreTitle}

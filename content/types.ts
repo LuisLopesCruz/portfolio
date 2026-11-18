@@ -2,7 +2,7 @@ export type Locale = "pt" | "en" | "es";
 
 export type ProjectId = "legno" | "tempo" | "fsm360" | "ecovox" | "lumen";
 
-export type OtherWorkId = "site-legno" | "landing-legno" | "revisao-9ano";
+export type OtherWorkId = "painel-enel-rj" | "site-legno" | "landing-legno" | "revisao-9ano";
 
 export type Status = "inUse" | "live" | "closedBeta" | "inDevelopment" | "inSpecification";
 

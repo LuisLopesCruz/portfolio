@@ -123,12 +123,24 @@ export interface OtherWorkFacts {
   id: OtherWorkId;
   status: Status;
   stack: string[];
-  link: string;
+  /** Endereço externo, ou um por idioma quando a página é deste site. */
+  link: string | Record<Locale, string>;
   image: { src: string; width: number; height: number };
 }
 
 /** Outros trabalhos (ordem de exibição). */
 export const OTHER_WORKS: OtherWorkFacts[] = [
+  {
+    id: "painel-enel-rj",
+    status: "live",
+    stack: ["Python", "pandas", "SVG", "ANEEL"],
+    link: {
+      pt: "/paineis/continuidade-enel-rj",
+      en: "/en/dashboards/enel-rj-continuity",
+      es: "/es/paneles/continuidad-enel-rj",
+    },
+    image: { src: "/projects/extras/painel-enel-rj-v3.png", width: 1200, height: 750 },
+  },
   {
     id: "site-legno",
     status: "live",

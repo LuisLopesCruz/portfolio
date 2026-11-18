@@ -11,16 +11,17 @@ export default function OtherWorks({ content }: { content: Content }) {
   return (
     <div data-reveal className="mt-20 sm:mt-24">
       <h3 className="font-mono text-xs tracking-[0.16em] text-cyan uppercase">{otherWorks.title}</h3>
-      <ul className="mt-6 grid gap-5 md:grid-cols-3">
+      <ul className="mt-6 grid gap-5 md:grid-cols-2">
         {OTHER_WORKS.map((work) => {
           const text = textById.get(work.id);
           if (!text) return null;
+          const internal = typeof work.link !== "string";
+          const href = typeof work.link === "string" ? work.link : work.link[content.locale];
           return (
             <li key={work.id}>
               <a
-                href={work.link}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={href}
+                {...(internal ? {} : { target: "_blank", rel: "noopener noreferrer" })}
                 className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface/70 transition-[border-color,transform,box-shadow] duration-500 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_0_60px_-24px_#4fb0c666]"
               >
                 <span className="block overflow-hidden border-b border-line">
@@ -29,7 +30,7 @@ export default function OtherWorks({ content }: { content: Content }) {
                     width={work.image.width}
                     height={work.image.height}
                     alt={text.imageAlt}
-                    sizes="(min-width: 768px) 33vw, 100vw"
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
                   />
                 </span>
@@ -51,8 +52,8 @@ export default function OtherWorks({ content }: { content: Content }) {
                   </span>
                   <span className="mt-auto inline-flex items-center gap-2 pt-6 font-mono text-xs tracking-[0.12em] text-fg uppercase transition-colors group-hover:text-cyan">
                     {otherWorks.openLabel}
-                    <span aria-hidden="true">↗</span>
-                    <span className="sr-only">({projects.externalLinkHint})</span>
+                    <span aria-hidden="true">{internal ? "→" : "↗"}</span>
+                    {internal ? null : <span className="sr-only">({projects.externalLinkHint})</span>}
                   </span>
                 </span>
               </a>
