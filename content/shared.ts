@@ -1,4 +1,4 @@
-import type { Locale, ProjectId, Status } from "./types";
+import type { Locale, OtherWorkId, ProjectId, Status } from "./types";
 
 /** Dados que não mudam de idioma: nomes próprios, links, stacks e status. */
 
@@ -118,3 +118,36 @@ export const ARTICLE_BASE: Record<Locale, string> = {
 export function articlePath(locale: Locale, slug: string) {
   return `${ARTICLE_BASE[locale]}/${slug}`;
 }
+
+export interface OtherWorkFacts {
+  id: OtherWorkId;
+  status: Status;
+  stack: string[];
+  link: string;
+  image: { src: string; width: number; height: number };
+}
+
+/** Outros trabalhos (ordem de exibição). */
+export const OTHER_WORKS: OtherWorkFacts[] = [
+  {
+    id: "site-legno",
+    status: "live",
+    stack: ["Wix"],
+    link: "https://www.legnodesignmoveis.com.br/",
+    image: { src: "/projects/extras/site-legno.png", width: 1120, height: 473 },
+  },
+  {
+    id: "landing-legno",
+    status: "live",
+    stack: ["Supabase", "Cloudflare", "Legno Design ERP"],
+    link: "https://lp.legnodesignmoveis.com.br/",
+    image: { src: "/projects/extras/landing-legno.png", width: 1280, height: 712 },
+  },
+  {
+    id: "revisao-9ano",
+    status: "inUse",
+    stack: ["Claude", "HTML", "JavaScript"],
+    link: "https://claude.ai/artifact/4wGUhCNDtG9gfcuBfUMSJo",
+    image: { src: "/projects/extras/revisao-9ano.png", width: 860, height: 640 },
+  },
+];

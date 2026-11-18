@@ -1,6 +1,7 @@
 import { CONTACT, PERSON, PROJECTS, SECTION_IDS, articlePath } from "@/content/shared";
 import type { Content } from "@/content/types";
 import { formatDate } from "@/lib/articles";
+import OtherWorks from "./OtherWorks";
 import PageEffects from "./PageEffects";
 import ProjectCard from "./ProjectCard";
 import ScrollRestore from "./ScrollRestore";
@@ -131,6 +132,7 @@ export default function HomePage({ content }: { content: Content }) {
                 );
               })}
             </div>
+            <OtherWorks content={content} />
           </div>
         </section>
 

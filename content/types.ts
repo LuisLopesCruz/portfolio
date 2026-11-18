@@ -2,6 +2,8 @@ export type Locale = "pt" | "en" | "es";
 
 export type ProjectId = "legno" | "tempo" | "fsm360" | "ecovox" | "lumen";
 
+export type OtherWorkId = "site-legno" | "landing-legno" | "revisao-9ano";
+
 export type Status = "inUse" | "live" | "closedBeta" | "inDevelopment" | "inSpecification";
 
 export interface ProjectMetric {
@@ -102,6 +104,12 @@ export interface Content {
     galleryNext: string;
     galleryOf: string;
     items: ProjectText[];
+  };
+  /** Trabalhos menores, em cartões compactos abaixo dos projetos. */
+  otherWorks: {
+    title: string;
+    openLabel: string;
+    items: { id: OtherWorkId; name: string; description: string; imageAlt: string }[];
   };
   howIWork: {
     title: string;

@@ -220,6 +220,30 @@ const es: Content = {
       },
     ],
   },
+  otherWorks: {
+    title: "Otros trabajos",
+    openLabel: "Abrir",
+    items: [
+      {
+        id: "site-legno",
+        name: "Sitio Legno Design",
+        description: "Sitio institucional de la carpintería, con servicios, horarios, reserva en línea y boletín. Lo armé yo en la plataforma Wix.",
+        imageAlt: "Página de inicio del sitio de Legno Design, con el menú y la foto de una cocina a medida.",
+      },
+      {
+        id: "landing-legno",
+        name: "Landing page Legno Design",
+        description: "Página de captación de presupuestos, con prerregistro y WhatsApp. Cada lead entra solo al kanban del Legno Design ERP y llega por correo; quien hace clic en WhatsApp aparece destacado como el lead más caliente.",
+        imageAlt: "Parte superior de la landing page de Legno Design, con el titular y los botones de presupuesto.",
+      },
+      {
+        id: "revisao-9ano",
+        name: "Repaso 9.º año",
+        description: "Sistema de estudio adaptado para 9.º año, con explicaciones pensadas para estudiantes con TDAH: 8 materias, resúmenes en bloques cortos, 240 preguntas en simulacros sin repetición, explicación de cada respuesta y lectura en voz alta.",
+        imageAlt: "Pantalla del sistema Repaso 9.º año, con las materias, las pestañas de resumen y simulacros y un bloque de resumen.",
+      },
+    ],
+  },
   howIWork: {
     title: "Cómo trabajo",
     steps: [

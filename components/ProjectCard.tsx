@@ -5,7 +5,7 @@ import type { Content, ProjectText, Status } from "@/content/types";
 
 const ACTIVE_STATUS: Status[] = ["inUse", "live", "closedBeta"];
 
-function StatusBadge({ status, label }: { status: Status; label: string }) {
+export function StatusBadge({ status, label }: { status: Status; label: string }) {
   const active = ACTIVE_STATUS.includes(status);
   return (
     <span

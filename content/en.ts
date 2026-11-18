@@ -219,6 +219,30 @@ const en: Content = {
       },
     ],
   },
+  otherWorks: {
+    title: "Other work",
+    openLabel: "Open",
+    items: [
+      {
+        id: "site-legno",
+        name: "Legno Design website",
+        description: "The furniture shop's company website, with services, opening hours, online booking and a newsletter. Built by me on Wix.",
+        imageAlt: "Home page of the Legno Design website, with the menu and a photo of a custom kitchen.",
+      },
+      {
+        id: "landing-legno",
+        name: "Legno Design landing page",
+        description: "Quote request page with a pre-registration form and WhatsApp. Every lead goes straight into the Legno Design ERP kanban and arrives by email; people who click WhatsApp are highlighted as the hottest leads.",
+        imageAlt: "Top of the Legno Design landing page, with the headline and the quote buttons.",
+      },
+      {
+        id: "revisao-9ano",
+        name: "9th Grade Review",
+        description: "Study system adapted for 9th grade, with explanations designed for students with ADHD: 8 subjects, summaries in short blocks, 240 questions in non-repeating mock tests, an explanation for every answer and read-aloud.",
+        imageAlt: "Screen of the 9th Grade Review system, with the subjects, the summary and mock test tabs, and a summary block.",
+      },
+    ],
+  },
   howIWork: {
     title: "How I work",
     steps: [
