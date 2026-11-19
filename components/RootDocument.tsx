@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { DM_Mono, Manrope } from "next/font/google";
 import type { ReactNode } from "react";
 import "@/app/globals.css";
@@ -44,7 +45,11 @@ export default function RootDocument({
         )}
         <script dangerouslySetInnerHTML={{ __html: MOTION_FLAG_SCRIPT }} />
       </head>
-      <body className="min-h-screen bg-bg font-sans text-fg antialiased">{children}</body>
+      <body className="min-h-screen bg-bg font-sans text-fg antialiased">
+        {children}
+        {/* Contagem de visitas da Vercel: sem cookies e sem guardar IP; só conta em produção. */}
+        <Analytics />
+      </body>
     </html>
   );
 }
