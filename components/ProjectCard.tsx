@@ -5,6 +5,18 @@ import type { Content, ProjectText, Status } from "@/content/types";
 
 const ACTIVE_STATUS: Status[] = ["inUse", "live", "closedBeta"];
 
+/** Quantas funcionalidades ficam à vista antes do "Ler mais". */
+const VISIBLE_FEATURES = 5;
+
+function Feature({ text }: { text: string }) {
+  return (
+    <li className="flex gap-3 leading-relaxed text-muted">
+      <span aria-hidden="true" className="mt-[0.6em] size-1.5 shrink-0 bg-accent" />
+      <span>{text}</span>
+    </li>
+  );
+}
+
 export function StatusBadge({ status, label }: { status: Status; label: string }) {
   const active = ACTIVE_STATUS.includes(status);
   return (
@@ -134,13 +146,29 @@ export default function ProjectCard({
         <div className="mt-7 space-y-3">
           <Label>{text.featuresLabel ?? labels.featuresLabel}</Label>
           <ul className="space-y-2.5">
-            {text.features.map((feature) => (
-              <li key={feature} className="flex gap-3 leading-relaxed text-muted">
-                <span aria-hidden="true" className="mt-[0.6em] size-1.5 shrink-0 bg-accent" />
-                <span>{feature}</span>
-              </li>
+            {text.features.slice(0, VISIBLE_FEATURES).map((feature) => (
+              <Feature key={feature} text={feature} />
             ))}
           </ul>
+          {text.features.length > VISIBLE_FEATURES ? (
+            // As principais ficam à vista; o resto abre no "Ler mais" (funciona sem JavaScript).
+            <details className="group">
+              <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-line-strong px-4 py-1.5 font-mono text-[11px] tracking-[0.12em] text-fg uppercase transition-colors hover:border-accent hover:text-cyan [&::-webkit-details-marker]:hidden">
+                <span className="group-open:hidden">
+                  {labels.readMore} <span className="text-faint">+{text.features.length - VISIBLE_FEATURES}</span>
+                </span>
+                <span className="hidden group-open:inline">{labels.readLess}</span>
+                <span aria-hidden="true" className="transition-transform duration-300 group-open:rotate-180">
+                  ↓
+                </span>
+              </summary>
+              <ul className="mt-4 space-y-2.5">
+                {text.features.slice(VISIBLE_FEATURES).map((feature) => (
+                  <Feature key={feature} text={feature} />
+                ))}
+              </ul>
+            </details>
+          ) : null}
         </div>
 
         <div className="mt-7 rounded-r-xl border-l-2 border-accent bg-accent-soft/60 py-4 pr-4 pl-5">

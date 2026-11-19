@@ -97,6 +97,9 @@ export interface Content {
     statusLabels: Record<Status, string>;
     externalLinkHint: string;
     imagePlaceholder: string;
+    /** Botão que abre e fecha o resto das funcionalidades. */
+    readMore: string;
+    readLess: string;
     enlargeImage: string;
     galleryViewAll: string;
     galleryClose: string;
