@@ -35,9 +35,20 @@ export function saveConsent(value: Consent) {
 
 let started: Promise<typeof import("@amplitude/analytics-browser") | null> | null = null;
 
-/** Carrega e inicia o Amplitude (uma vez). Sem chave configurada, não faz nada. */
+/**
+ * Só o site oficial mede. Testes locais e previews da Vercel (outros endereços
+ * *.vercel.app) mostram o aviso normalmente, mas não enviam nada ao Amplitude.
+ */
+const PRODUCTION_HOST = "portfolio-luis-claudio-lopes-da-cruz-projects.vercel.app";
+function isProductionSite() {
+  const host = location.hostname;
+  if (host === "localhost" || host === "127.0.0.1" || host === "[::1]") return false;
+  return host === PRODUCTION_HOST || !host.endsWith(".vercel.app");
+}
+
+/** Carrega e inicia o Amplitude (uma vez). Sem chave configurada ou fora do site oficial, não faz nada. */
 export function startAmplitude() {
-  if (!AMPLITUDE_API_KEY) return Promise.resolve(null);
+  if (!AMPLITUDE_API_KEY || !isProductionSite()) return Promise.resolve(null);
   if (!started) {
     started = import("@amplitude/analytics-browser").then((amplitude) => {
       amplitude.init(AMPLITUDE_API_KEY, {
