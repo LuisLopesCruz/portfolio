@@ -128,14 +128,16 @@ const es: Content = {
             "Diagrama de FSM 360: la cuadrilla del turno en el centro, vinculada a personas, vehículo, herramientas, materiales, seguridad y órdenes de trabajo, todo bajo el mismo motor de reglas.",
         },
         problem:
-          "Las contratistas de energía y saneamiento pierden dinero por fallas de control, y el cierre de la orden de trabajo en campo es el mayor cuello de botella.",
+          "En el cambio de turno de las contratistas de energía y saneamiento, quien sale dice que dejó todo en orden y quien entra dice que ya lo recibió así. Sin registro de las dos versiones, el vehículo con avería, la herramienta que desapareció y el material que faltó se quedan sin responsable. El cierre de la orden de trabajo en campo es el otro gran cuello de botella.",
         metrics: [
           { value: "7", label: "etapas de la operación en un solo sistema" },
           { value: "16", label: "reglas de bloqueo entre módulos" },
-          { value: "6", label: "dominios vinculados a cada cuadrilla" },
+          { value: "2", label: "firmas en cada cambio de turno: quien entrega y quien recibe" },
         ],
         featuresLabel: "Qué hará",
         features: [
+          "Hacer el cambio de turno en un solo flujo. Quien sale declara cómo dejó el vehículo, el equipo de protección colectiva, las herramientas y los materiales. Quien entra revisa ítem por ítem y registra cómo lo está recibiendo. Las dos versiones quedan lado a lado, con fotos, hora y doble firma, y cualquier diferencia se convierte en una pendiente con responsable en el momento.",
+          "Cuando no hay cuadrilla siguiente y el vehículo va al patio, quien sale declara y firma lo que deja. Quien tome el vehículo después lo revisa número por número, y lo que falte queda a nombre del líder anterior.",
           "Cubrir las siete etapas de la operación de campo: planificación, preparación, liberación, despacho, ejecución, conciliación del turno e indicadores.",
           "Usar la cuadrilla del turno como unidad de control: personas, vehículo, herramientas, materiales, seguridad y órdenes de trabajo quedan vinculados a ella, y el historial sobrevive al cambio de vehículo.",
           "Impedir, con un único motor de reglas, que la cuadrilla salga con algo irregular: habilitación vencida, EPP sin checklist, herramienta sin calibrar o análisis de riesgo no emitido.",

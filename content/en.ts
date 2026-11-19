@@ -127,14 +127,16 @@ const en: Content = {
             "FSM 360 diagram: the shift crew at the center, linked to people, vehicle, tools, materials, safety and work orders, all under the same rules engine.",
         },
         problem:
-          "Energy and sanitation contractors lose money to control failures, and closing work orders in the field is the biggest bottleneck.",
+          "At shift change in energy and sanitation contractors, the outgoing crew says everything was left in order and the incoming crew says it was already like that when they took over. With no record of either version, the damaged vehicle, the missing tool and the material that ran short end up with no one accountable. Closing work orders in the field is the other big bottleneck.",
         metrics: [
           { value: "7", label: "operation stages in one system" },
           { value: "16", label: "cross-module blocking rules" },
-          { value: "6", label: "domains linked to each crew" },
+          { value: "2", label: "signatures at every shift change: who hands over and who takes over" },
         ],
         featuresLabel: "What it will do",
         features: [
+          "Run the shift handover as a single flow. The outgoing crew declares how it left the vehicle, collective safety equipment, tools and materials. The incoming crew checks item by item and records how it is receiving them. Both versions sit side by side, with photos, timestamps and two signatures, and any difference becomes an issue with an owner on the spot.",
+          "When there is no next crew and the vehicle goes back to the yard, the outgoing crew declares and signs what it leaves. Whoever takes the vehicle next checks it number by number, and anything missing is assigned to the previous crew leader.",
           "Cover all seven stages of field operations: planning, preparation, release, dispatch, execution, shift reconciliation and metrics.",
           "Use the shift crew as the unit of control: people, vehicle, tools, materials, safety and work orders are linked to it, and the history survives vehicle swaps.",
           "Block a crew from leaving with anything out of compliance, through a single rules engine: expired certification, missing PPE checklist, uncalibrated tools or no job safety analysis.",

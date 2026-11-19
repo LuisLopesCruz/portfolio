@@ -128,14 +128,16 @@ const pt: Content = {
             "Diagrama do FSM 360: a equipe do turno no centro, ligada a pessoas, viatura, ferramental, materiais, segurança e ordens de serviço, todos sob o mesmo motor de regras.",
         },
         problem:
-          "Empreiteiras de energia e saneamento perdem dinheiro com falhas de controle, e o fechamento da ordem de serviço em campo é o maior gargalo.",
+          "Na troca de turno das empreiteiras de energia e saneamento, quem sai diz que deixou tudo certo e quem entra diz que já recebeu assim. Sem registro das duas versões, a viatura com avaria, a ferramenta que sumiu e o material que faltou ficam sem dono. O fechamento da ordem de serviço em campo é o outro grande gargalo.",
         metrics: [
           { value: "7", label: "etapas da operação num só sistema" },
           { value: "16", label: "regras de bloqueio entre módulos" },
-          { value: "6", label: "domínios ligados a cada equipe" },
+          { value: "2", label: "assinaturas em cada troca de turno: quem entrega e quem recebe" },
         ],
         featuresLabel: "O que vai fazer",
         features: [
+          "Fazer a passagem de turno num fluxo só. Quem sai declara como deixou a viatura, o EPC, o ferramental e os materiais. Quem entra confere item a item e registra como está recebendo. As duas versões ficam lado a lado, com fotos, horário e dupla assinatura, e qualquer diferença vira pendência com responsável na hora.",
+          "Quando não há equipe seguinte e a viatura vai para o pátio, quem sai declara e assina o que deixa. Quem pegar a viatura depois confere número a número, e o que faltar fica em nome do líder anterior.",
           "Cobrir as sete etapas da operação de campo: planejamento, preparação, liberação, despacho, execução, conciliação do turno e indicadores.",
           "Usar a equipe do turno como unidade de controle: pessoas, viatura, ferramental, materiais, segurança e ordens de serviço ficam ligados a ela, e o histórico sobrevive à troca de viatura.",
           "Impedir, por um motor de regras único, a saída da equipe com item irregular: habilitação vencida, EPI sem checklist, ferramenta fora de calibração ou APR/PT não emitida.",
