@@ -1,3 +1,4 @@
+import { CookiePreferencesButton } from "./CookieConsent";
 import { LOCALE_PATHS, PERSON, SECTION_IDS } from "@/content/shared";
 import type { Article, Content } from "@/content/types";
 import { articleTranslations, formatDate } from "@/lib/articles";
@@ -94,7 +95,10 @@ export default function ArticlePage({ content, article }: { content: Content; ar
           <p>
             © {year} {PERSON.name}
           </p>
-          <p>{footer.builtWith}</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>{footer.builtWith}</span>
+            <CookiePreferencesButton label={footer.cookies} />
+          </p>
         </div>
       </footer>
     </>

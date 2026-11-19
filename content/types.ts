@@ -144,5 +144,8 @@ export interface Content {
   };
   footer: {
     builtWith: string;
+    cookies: string;
   };
+  /** Aviso de cookies do Amplitude. */
+  consent: { title: string; text: string; accept: string; decline: string; close: string };
 }

@@ -1,3 +1,4 @@
+import { CookiePreferencesButton } from "./CookieConsent";
 import { CONTACT, PERSON, PROJECTS, SECTION_IDS, articlePath } from "@/content/shared";
 import type { Content } from "@/content/types";
 import { formatDate } from "@/lib/articles";
@@ -355,7 +356,10 @@ export default function HomePage({ content }: { content: Content }) {
           <p>
             © {year} {PERSON.name}
           </p>
-          <p>{footer.builtWith}</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>{footer.builtWith}</span>
+            <CookiePreferencesButton label={footer.cookies} />
+          </p>
         </div>
       </footer>
     </>

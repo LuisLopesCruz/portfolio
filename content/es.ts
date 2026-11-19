@@ -411,6 +411,14 @@ const es: Content = {
   },
   footer: {
     builtWith: "Construido con Claude Code.",
+    cookies: "Cookies",
+  },
+  consent: {
+    title: "Cookies",
+    text: "Uso cookies de medición (Amplitude) para entender qué se lee más y desde dónde llegan las visitas, por ciudad. Nada se vende ni se usa para anuncios. Puedes cambiar tu elección cuando quieras en “Cookies”, en el pie de página.",
+    accept: "Aceptar",
+    decline: "Rechazar",
+    close: "Cerrar",
   },
 };
 

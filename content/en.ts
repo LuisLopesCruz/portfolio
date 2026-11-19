@@ -410,6 +410,14 @@ const en: Content = {
   },
   footer: {
     builtWith: "Built with Claude Code.",
+    cookies: "Cookies",
+  },
+  consent: {
+    title: "Cookies",
+    text: "I use analytics cookies (Amplitude) to see what gets read most and where visits come from, by city. Nothing is sold or used for ads. You can change your choice anytime under “Cookies” in the footer.",
+    accept: "Accept",
+    decline: "Decline",
+    close: "Close",
   },
 };
 

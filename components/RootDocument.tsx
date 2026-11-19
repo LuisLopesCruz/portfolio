@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/next";
+import CookieConsent from "./CookieConsent";
 import { DM_Mono, Manrope } from "next/font/google";
 import type { ReactNode } from "react";
 import "@/app/globals.css";
@@ -49,6 +50,8 @@ export default function RootDocument({
         {children}
         {/* Contagem de visitas da Vercel: sem cookies e sem guardar IP; só conta em produção. */}
         <Analytics />
+        {/* Amplitude: só carrega depois do "Aceitar" no aviso de cookies. */}
+        <CookieConsent text={CONTENT[locale].consent} />
       </body>
     </html>
   );

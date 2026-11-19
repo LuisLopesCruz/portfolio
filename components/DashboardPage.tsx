@@ -1,3 +1,4 @@
+import { CookiePreferencesButton } from "./CookieConsent";
 import { DASHBOARD, type DashboardNumbers } from "@/content/dashboard";
 import { SEASON, WORST_2025, YEARS, YTD } from "@/content/dashboard-data";
 import { LOCALE_PATHS, PERSON, SECTION_IDS } from "@/content/shared";
@@ -353,7 +354,10 @@ export default function DashboardPage({ content }: { content: Content }) {
           <p>
             © {year} {PERSON.name}
           </p>
-          <p>{content.footer.builtWith}</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>{content.footer.builtWith}</span>
+            <CookiePreferencesButton label={content.footer.cookies} />
+          </p>
         </div>
       </footer>
     </>
