@@ -1,4 +1,5 @@
 import { CookiePreferencesButton } from "./CookieConsent";
+import { CASE, casePath } from "@/content/case";
 import { CONTACT, PERSON, PROJECTS, SECTION_IDS, articlePath } from "@/content/shared";
 import type { Content } from "@/content/types";
 import { formatDate } from "@/lib/articles";
@@ -360,6 +361,9 @@ export default function HomePage({ content }: { content: Content }) {
           </p>
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span>{footer.builtWith}</span>
+            <a href={casePath(content.locale)} className="transition-colors hover:text-cyan">
+              {CASE[content.locale].footerLink}
+            </a>
             <CookiePreferencesButton label={footer.cookies} />
           </p>
         </div>

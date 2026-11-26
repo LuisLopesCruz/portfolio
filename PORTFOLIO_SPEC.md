@@ -366,3 +366,9 @@ Estas respostas substituem os **[CONFIRMAR]** acima. As stacks foram conferidas 
 - A partir daqui, os textos oficiais são os de `content/pt.ts`, `content/en.ts` e `content/es.ts`. As seções 8 a 10 desta spec ficam como histórico.
 
 **Redesenho visual (2026-11-16):** a partir de uma sugestão de designer (referência local, fora do repositório), o site passa a ter **tema escuro único** e **azul-petróleo + ciano** como cores de destaque, ambos decididos pelo Luis. Isso substitui os itens da seção 5 sobre tema claro por padrão e cor única. Tipografia Manrope + DM Mono. Animações em canvas 2D e CSS 3D (sem Three.js, pelo desempenho), que respeitam "reduzir movimento". O conteúdo aprovado não muda.
+
+**Outros trabalhos, artigos e painel (2026-11-18):** entra a faixa "Outros trabalhos" (site e landing page da Legno, Revisão 9º Ano e o painel de continuidade da Enel RJ, feito com dados abertos da ANEEL) e um segundo artigo, sobre o design system.
+
+**Projetos e medição (2026-11-19):** cada projeto passa a ter o problema estruturado e 10 ou mais funções, com as 5 principais à vista e o resto em "Ler mais". Medição de visitas com Vercel Web Analytics (sem cookies) e, só depois do "Aceitar" no aviso de cookies, Amplitude no plano gratuito (cliques, retorno e cidade). Substitui a ideia de não ter nenhuma medição; o site continua estático.
+
+**Hero e método (2026-11-25):** o núcleo 3D dá lugar a uma esfera de partículas em canvas 2D, sem bibliotecas, que se reorganiza na rede das etapas de "Como trabalho", com "AI SYSTEMS BUILDER" fixo no centro. "Como trabalho" ganha a 5ª etapa, Evoluo. Saem as formas em wireframe do fundo. Nova página "Como este site foi feito", com o próprio portfólio como case.

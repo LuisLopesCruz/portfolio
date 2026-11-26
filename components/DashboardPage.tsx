@@ -1,4 +1,5 @@
 import { CookiePreferencesButton } from "./CookieConsent";
+import { CASE, casePath } from "@/content/case";
 import { DASHBOARD, type DashboardNumbers } from "@/content/dashboard";
 import { SEASON, WORST_2025, YEARS, YTD } from "@/content/dashboard-data";
 import { LOCALE_PATHS, PERSON, SECTION_IDS } from "@/content/shared";
@@ -356,6 +357,9 @@ export default function DashboardPage({ content }: { content: Content }) {
           </p>
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span>{content.footer.builtWith}</span>
+            <a href={casePath(content.locale)} className="transition-colors hover:text-cyan">
+              {CASE[content.locale].footerLink}
+            </a>
             <CookiePreferencesButton label={content.footer.cookies} />
           </p>
         </div>

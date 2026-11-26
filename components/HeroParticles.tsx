@@ -89,7 +89,7 @@ export default function HeroParticles({ steps }: { steps: string[] }) {
 
     // Monta as formas e as partículas só quando o navegador fica ocioso, depois do carregamento,
     // para não pesar no carregamento da página.
-    function build() {
+    async function build() {
       resize();
       const N = mobile ? PARTICLES_MOBILE : PARTICLES_DESKTOP;
       const rnd = Math.random;
@@ -115,6 +115,10 @@ export default function HeroParticles({ steps }: { steps: string[] }) {
       });
 
       // Rede: nó central + etapas em anel.
+      // Cede a vez ao navegador entre as etapas, para nenhuma virar uma tarefa longa.
+      await nextIdle();
+      if (!alive) return null;
+
       const nodes: Node[] = [{ label: CENTER_LABEL, p: [0, 0, 0], s: 0.24, main: true }];
       labels.forEach((label, k, arr) => {
         const a = -Math.PI / 2 + (k * 2 * Math.PI) / arr.length;
@@ -140,6 +144,9 @@ export default function HeroParticles({ steps }: { steps: string[] }) {
       }
       shuffle(network);
       const SHAPES: Record<ShapeName, Vec[]> = { sphere, dust, network };
+
+      await nextIdle();
+      if (!alive) return null;
 
       // ---------- partículas ----------
       const P: Particle[] = sphere.map(([x, y, z], i) => ({
@@ -322,7 +329,9 @@ export default function HeroParticles({ steps }: { steps: string[] }) {
 
       return { frame, still };
     }
-    let scene: ReturnType<typeof build> | null = null;
+    let scene: Awaited<ReturnType<typeof build>> = null;
+    let alive = true, building = false;
+    const nextIdle = () => new Promise<void>((r) => idle(r));
     const mouse = { x: -9999, y: -9999, nx: 0, ny: 0 };
 
     // ---------- loop: só depois do carregamento, para fora da tela ou com a aba oculta ----------
@@ -365,8 +374,14 @@ export default function HeroParticles({ steps }: { steps: string[] }) {
     });
     const onVisibility = () => (document.hidden ? stop() : start());
 
-    const begin = () => {
-      if (!scene) scene = build();
+    const begin = async () => {
+      if (!scene) {
+        if (building) return;
+        building = true;
+        scene = await build();
+        building = false;
+        if (!alive || !scene) return;
+      }
       ready = true;
       if (reduce) {
         scene.still();
@@ -378,7 +393,7 @@ export default function HeroParticles({ steps }: { steps: string[] }) {
       if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(cb, { timeout: 2500 });
       else setTimeout(cb, 1200);
     };
-    const onLoad = () => idle(begin);
+    const onLoad = () => idle(() => void begin());
     if (document.readyState === "complete") onLoad();
     else window.addEventListener("load", onLoad, { once: true });
 
@@ -392,6 +407,7 @@ export default function HeroParticles({ steps }: { steps: string[] }) {
     }
 
     return () => {
+      alive = false;
       stop();
       ready = false;
       visibility.disconnect();
