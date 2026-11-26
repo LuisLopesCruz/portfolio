@@ -81,8 +81,6 @@ export interface Content {
     /** Trecho do título destacado com gradiente (precisa existir no título). */
     titleHighlight: string;
     /** Texto dentro da esfera do hero. */
-    coreTitle: string;
-    coreSubtitle: string;
     subtitle: string;
     ctaProjects: string;
     ctaContact: string;

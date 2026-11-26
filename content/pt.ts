@@ -23,8 +23,6 @@ const pt: Content = {
     eyebrow: "AI Systems Builder",
     title: "Construo sistemas com Inteligência Artificial para operações reais.",
     titleHighlight: "Inteligência Artificial",
-    coreTitle: "AI",
-    coreSubtitle: "SYSTEM BUILDER",
     subtitle:
       "20 anos gerenciando operações de campo no setor elétrico. Hoje transformo esse conhecimento em software: especifico o problema, as regras e a lógica, e conduzo agentes de IA na construção.",
     ctaProjects: "Ver projetos",
@@ -299,6 +297,10 @@ const pt: Content = {
       {
         title: "Valido.",
         text: "Testo como quem vai usar, até funcionar na prática.",
+      },
+      {
+        title: "Evoluo.",
+        text: "Acompanho o uso real, meço os resultados e melhoro continuamente.",
       },
     ],
   },

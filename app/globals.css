@@ -118,89 +118,10 @@ section[id] {
   background-position: -1px -1px;
 }
 
-/* ---------- Visual do sistema (hero) ---------- */
-
-/* Área do núcleo: sem moldura, as órbitas ficam soltas sobre o fundo da página. */
-.system-canvas {
-  position: absolute;
-  inset: -22%;
-  width: 144%;
-  height: 144%;
-  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
-  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
-}
-
-.system-stage {
-  position: absolute;
-  inset: 0;
-  transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 8px), 0);
-  transition: transform 0.8s var(--ease);
-}
-
-/* Esfera do núcleo: lisa, com luz no alto à esquerda. */
-.system-core {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 200px;
-  height: 200px;
-  margin: -100px 0 0 -100px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 28%, #c9f3fb 0%, #6cc6d8 14%, #2a8ea3 36%, #0f5462 62%, #071f26 88%);
-  box-shadow:
-    inset -22px -26px 44px #02090c,
-    inset 12px 10px 26px #ffffff2e;
-  animation: coreFloat 6s ease-in-out infinite;
-}
-
-.system-core::after {
-  content: "";
-  position: absolute;
-  width: 42%;
-  height: 34%;
-  left: 16%;
-  top: 11%;
-  border-radius: 50%;
-  background: #ffffff50;
-  filter: blur(20px);
-}
-
-/* Brilho do núcleo como camada própria (sombra grande em 3D sai cortada). */
-.core-glow {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 460px;
-  height: 460px;
-  margin: -230px 0 0 -230px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #2a8ea352 0%, #2a8ea31c 34%, transparent 66%);
-  pointer-events: none;
-  animation: glowBreath 5s ease-in-out infinite;
-}
-
+/* Ponto que pulsa ao lado do "AI Systems Builder" no hero. */
 .pulse-dot {
   box-shadow: 0 0 0 0 #7be8dc66;
   animation: pulse 2s infinite;
-}
-
-@media (max-width: 639px) {
-  .system-core {
-    width: 140px;
-    height: 140px;
-    margin: -70px 0 0 -70px;
-  }
-  .core-glow {
-    width: 320px;
-    height: 320px;
-    margin: -160px 0 0 -160px;
-  }
-}
-
-/* Animações do hero ficam paradas até a página carregar e o visual estar na tela. */
-.system-visual[data-paused="true"] * {
-  animation-play-state: paused !important;
 }
 
 /* ---------- Faixa corrida ---------- */
@@ -291,26 +212,6 @@ section[id] {
   }
   100% {
     box-shadow: 0 0 0 0 #7be8dc00;
-  }
-}
-@keyframes coreFloat {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 -8px;
-  }
-}
-@keyframes glowBreath {
-  0%,
-  100% {
-    opacity: 0.75;
-    scale: 0.94;
-  }
-  50% {
-    opacity: 1;
-    scale: 1.08;
   }
 }
 @keyframes marquee {

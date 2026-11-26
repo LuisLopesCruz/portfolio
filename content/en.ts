@@ -23,8 +23,6 @@ const en: Content = {
     eyebrow: "AI Systems Builder",
     title: "I build AI-powered systems for real-world operations.",
     titleHighlight: "AI-powered",
-    coreTitle: "AI",
-    coreSubtitle: "SYSTEM BUILDER",
     subtitle:
       "20 years running field operations in the electric utility sector. Today I turn that experience into software: I define the problem, the rules and the logic, and I direct AI agents to build it.",
     ctaProjects: "See projects",
@@ -298,6 +296,10 @@ const en: Content = {
       {
         title: "I validate.",
         text: "I test as the person who will use it, until it works in practice.",
+      },
+      {
+        title: "I evolve it.",
+        text: "I follow real usage, measure results and keep improving.",
       },
     ],
   },

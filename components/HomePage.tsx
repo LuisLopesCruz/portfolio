@@ -4,11 +4,10 @@ import type { Content } from "@/content/types";
 import { formatDate } from "@/lib/articles";
 import OtherWorks from "./OtherWorks";
 import PageEffects from "./PageEffects";
-import ParallaxField from "./ParallaxField";
 import ProjectCard from "./ProjectCard";
 import ScrollRestore from "./ScrollRestore";
 import SiteHeader from "./SiteHeader";
-import SystemVisual from "./SystemVisual";
+import HeroParticles from "./HeroParticles";
 
 function SectionHeading({ number, id, children }: { number: string; id: string; children: string }) {
   return (
@@ -44,6 +43,10 @@ export default function HomePage({ content }: { content: Content }) {
   const textById = new Map(projects.items.map((item) => [item.id, item]));
   const year = new Date().getFullYear();
   const tickerItems = [...PROJECTS, ...PROJECTS];
+  // Rótulos das etapas na rede do hero: "01 Entendo a operação" (sem o ponto final).
+  const methodLabels = howIWork.steps.map(
+    (step, i) => `${String(i + 1).padStart(2, "0")} ${step.title.replace(/\.$/, "")}`,
+  );
 
   const contactLinks = [
     { label: contact.linkedinLabel, href: CONTACT.linkedin, display: CONTACT.linkedinDisplay, external: true },
@@ -60,15 +63,14 @@ export default function HomePage({ content }: { content: Content }) {
         {nav.skipToContent}
       </a>
       <PageEffects />
-      <ParallaxField />
       <SiteHeader content={content} />
       <ScrollRestore />
 
       <main id="main" tabIndex={-1} className="relative z-10 outline-none">
         {/* Hero */}
-        <section data-anchor id={SECTION_IDS.hero} aria-labelledby="hero-title" className="overflow-x-clip">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pt-14 lg:pb-20">
-            <div>
+        <section data-anchor id={SECTION_IDS.hero} aria-labelledby="hero-title" className="relative overflow-x-clip">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-6 pb-16 sm:px-6 sm:pt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pt-14 lg:pb-20">
+            <div className="relative z-10">
               <p className="flex items-center gap-3 font-mono text-[11px] tracking-[0.16em] text-muted uppercase">
                 <span aria-hidden="true" className="pulse-dot size-2 rounded-full bg-cyan" />
                 {hero.eyebrow}
@@ -103,11 +105,11 @@ export default function HomePage({ content }: { content: Content }) {
                 </a>
               </div>
             </div>
-            <SystemVisual coreTitle={hero.coreTitle} coreSubtitle={hero.coreSubtitle} />
+            <HeroParticles steps={methodLabels} />
           </div>
 
           {/* Faixa corrida com os projetos (decorativa). */}
-          <div aria-hidden="true" className="overflow-hidden border-y border-line py-5">
+          <div aria-hidden="true" className="relative z-10 overflow-hidden border-y border-line bg-bg/70 py-5">
             <div className="ticker-track flex w-max gap-10 whitespace-nowrap">
               {tickerItems.map((p, i) => (
                 <span key={`${p.id}-${i}`} className="font-mono text-[11px] tracking-[0.2em] text-faint uppercase">
@@ -155,11 +157,11 @@ export default function HomePage({ content }: { content: Content }) {
                 aria-hidden="true"
                 className="draw-x absolute inset-x-0 top-0 h-px bg-gradient-to-r from-accent via-cyan to-transparent"
               />
-              <ol className="grid gap-px border-b border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+              <ol className="grid gap-px border-b border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
                 {howIWork.steps.map((step, i) => (
                   <li
                     key={step.title}
-                    className="bg-surface px-5 pt-7 pb-9 transition-colors duration-300 hover:bg-surface-2"
+                    className="bg-surface px-5 pt-7 pb-9 transition-colors duration-300 hover:bg-surface-2 sm:last:col-span-2 lg:last:col-span-1"
                   >
                     <span aria-hidden="true" className="font-mono text-xs tracking-[0.14em] text-cyan">
                       {String(i + 1).padStart(2, "0")} / {String(howIWork.steps.length).padStart(2, "0")}
